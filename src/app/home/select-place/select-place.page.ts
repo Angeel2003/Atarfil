@@ -14,19 +14,30 @@ import { NavigationExtras, Router } from '@angular/router';
 export class SelectPlacePage implements OnInit {
   lugares: string[] = ['Granada', 'Dubai'];
   selectedLocation: string = '';
+  usuario: any;
 
   constructor(private router: Router) { }
 
   ngOnInit() {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state && navigation.extras.state['usuario']) {
+      this.usuario = navigation.extras.state['usuario'];
+    } else {
+      console.error('No se recibió el usuario en NavigationExtras.');
+    }
   }
 
   onSelect() {
-    const place = (<HTMLInputElement>document.getElementById('placeSelected')).value;
+    // Verificar que se haya seleccionado un valor
+    if (!this.selectedLocation || this.selectedLocation.trim() === "") {
+      alert('Por favor, seleccione un lugar de operación.');
+      return;
+    }
 
-    // Enviar los datos del perfil
     const navigationExtras: NavigationExtras = {
       state: {
-        place: place
+        usuario: this.usuario,
+        lugar: this.selectedLocation
       }
     };
     this.router.navigate(['/select-zone'], navigationExtras);
