@@ -19,16 +19,6 @@ const pool = new Pool({
   port: 5432,
 });
 
-app.get('/usuarios', async (req, res) => {
-  try {
-      const resultado = await pool.query('SELECT * FROM usuarios');
-      res.json(resultado.rows);
-  } catch (error) {
-      console.error('Error al obtener usuarios:', error);
-      res.status(500).json({ message: 'Error al obtener usuarios' });
-  }
-});
-
 // Endpoint para Login
 app.post('/api/login', async (req, res) => {
   const { correo_electronico, password } = req.body;
@@ -46,7 +36,6 @@ app.post('/api/login', async (req, res) => {
 
     // Si el usuario no tiene contraseña establecida (primer login)
     if (!usuario.contrasena) {
-      // Se espera que ingrese su correo como contraseña para iniciar el proceso
       if (password === correo_electronico) {
         return res.json({
           message: 'Primer login. Se requiere actualizar la contraseña.',
@@ -64,7 +53,6 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
 
-    // Login exitoso
     return res.json({ message: 'Login exitoso', usuario });
   } catch (error) {
     console.error('Error en login:', error);
@@ -87,6 +75,33 @@ app.post('/api/update-password', async (req, res) => {
   } catch (error) {
     console.error('Error actualizando contraseña:', error);
     res.status(500).json({ error: 'Error al actualizar la contraseña' });
+  }
+});
+
+// Endpoint para listar los usuarios
+app.get('/usuarios', async (req, res) => {
+  try {
+      const resultado = await pool.query('SELECT * FROM usuarios ORDER BY nombre_completo ASC');
+      res.json(resultado.rows);
+  } catch (error) {
+      console.error('Error al obtener usuarios:', error);
+      res.status(500).json({ message: 'Error al obtener usuarios' });
+  }
+});
+
+// Endpoint para eliminar un usuario
+app.delete('/usuarios/:id', async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const resultado = await pool.query('DELETE FROM usuarios WHERE id = $1', [userId]);
+    if (resultado.rowCount > 0) {
+      res.json({ message: 'Usuario eliminado con éxito' });
+    } else {
+      res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    console.error('Error al eliminar usuario:', error);
+    res.status(500).json({ error: 'Error al eliminar usuario' });
   }
 });
 

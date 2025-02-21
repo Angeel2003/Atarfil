@@ -1,0 +1,63 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/user-management"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets/images/logo.png" alt="Logo" class="logo">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="true" shape="round">
+        <ion-icon slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form (ngSubmit)="onSubmit()">
+
+    <!-- Nombre Completo -->
+    <ion-item>
+      <ion-label position="floating">Nombre Completo</ion-label>
+      <ion-input id="nombreCompleto" type="text"name="nombreCompleto" required></ion-input>
+    </ion-item>
+
+    <!-- Correo -->
+    <ion-item>
+      <ion-label position="floating">Correo</ion-label>
+      <ion-input type="email" name="correo" required></ion-input>
+    </ion-item>
+
+    <!-- Número de Teléfono (opcional) -->
+    <ion-item>
+      <ion-label position="floating">Número de Teléfono</ion-label>
+      <ion-input type="tel" name="telefono"></ion-input>
+    </ion-item>
+
+    <!-- Tipo de Usuario -->
+    <ion-item>
+      <ion-label>Tipo de Usuario</ion-label>
+      <ion-select name="tipoUsuario" placeholder="Seleccione" required>
+        <ion-select-option value="Operador">Operador</ion-select-option>
+        <ion-select-option value="Administrador">Administrador</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Idioma -->
+    <ion-item>
+      <ion-label>Idioma</ion-label>
+      <ion-select name="idioma" placeholder="Seleccione" required>
+        <ion-select-option value="Castellano">Castellano</ion-select-option>
+        <ion-select-option value="Ingles">Ingles</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Botón Confirmar -->
+    <div class="button-container">
+      <ion-button class="confirm-button" type="submit" expand="block" shape="round">
+        Confirmar
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

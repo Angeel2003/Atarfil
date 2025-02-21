@@ -19,3 +19,47 @@ ion-title {
     max-height: 50px;
     width: auto;
 }
+
+.admin-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 70%;
+    padding: 20px;
+    text-align: center;
+}
+
+.admin-info {
+    margin-top: 20px;
+    margin-bottom: 60px;
+
+    h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    p {
+        margin: 0;
+        font-size: 16px;
+        color: gray;
+    }
+}
+
+.button-group {
+    width: 100%;
+    max-width: 500px;
+
+    ion-button {
+        height: 30%;
+        --background: #243270;
+        --color: #fff;
+        margin-bottom: 30px;
+    }
+}
+
+.toolbar-title {
+    text-align: center;
+    width: 100%;
+}

@@ -17,5 +17,22 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  
+  <div class="admin-panel">
+    <div class="admin-info">
+      <h2>{{ usuario.nombre_completo }}</h2>
+      <p>{{ usuario.correo_electronico }}</p>
+    </div>
+    <!-- Grupo de botones -->
+    <div class="button-group">
+      <ion-button expand="block" shape="round" (click)="goToUserManagement()">
+        Gestión Usuarios
+      </ion-button>
+      <ion-button expand="block" shape="round" (click)="goToIncidents()">
+        Incidencias
+      </ion-button>
+      <ion-button expand="block" shape="round" (click)="goToPDFReports()">
+        Reportes PDF
+      </ion-button>
+    </div>
+  </div>
 </ion-content>

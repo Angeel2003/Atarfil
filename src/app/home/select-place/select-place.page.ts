@@ -40,6 +40,6 @@ export class SelectPlacePage implements OnInit {
         lugar: this.selectedLocation
       }
     };
-    this.router.navigate(['/select-zone'], navigationExtras);
+    this.router.navigate(['/operator-panel'], navigationExtras);
   }
 }

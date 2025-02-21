@@ -32,6 +32,18 @@ export class AdministratorPanelPage implements OnInit {
     }
   }
 
+  goToUserManagement() {
+    this.router.navigate(['/user-management']);
+  }
+
+  goToIncidents() {
+    this.router.navigate(['/incidents']);
+  }
+
+  goToPDFReports() {
+    this.router.navigate(['/pdf-reports']);
+  }
+
   exit() {
     this.router.navigate(['/home']);
   }

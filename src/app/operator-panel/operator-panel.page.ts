@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 export class OperatorPanelPage implements OnInit {
   usuario: any;
   lugar: string = '';
-  zona: string = '';
 
   constructor(private router: Router) { }
 
@@ -29,13 +28,6 @@ export class OperatorPanelPage implements OnInit {
     const navigationPlace = this.router.getCurrentNavigation();
     if (navigationPlace?.extras.state && navigationPlace.extras.state['lugar']) {
       this.lugar = navigationPlace.extras.state['lugar'];
-    } else {
-      console.error('No se recibió el lugar en NavigationExtras.');
-    }
-
-    const navigationZone = this.router.getCurrentNavigation();
-    if (navigationZone?.extras.state && navigationZone.extras.state['zona']) {
-      this.zona = navigationZone.extras.state['zona'];
     } else {
       console.error('No se recibió el lugar en NavigationExtras.');
     }

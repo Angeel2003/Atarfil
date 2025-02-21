@@ -19,15 +19,27 @@ export const routes: Routes = [
     loadComponent: () => import('./home/select-place/select-place.page').then( m => m.SelectPlacePage)
   },
   {
-    path: 'select-zone',
-    loadComponent: () => import('./home/select-place/select-zone/select-zone.page').then( m => m.SelectZonePage)
-  },
-  {
     path: 'operator-panel',
     loadComponent: () => import('./operator-panel/operator-panel.page').then( m => m.OperatorPanelPage)
   },
   {
     path: 'administrator-panel',
     loadComponent: () => import('./administrator-panel/administrator-panel.page').then( m => m.AdministratorPanelPage)
+  },
+  {
+    path: 'user-management',
+    loadComponent: () => import('./administrator-panel/user-management/user-management.page').then( m => m.UserManagementPage)
+  },
+  {
+    path: 'incidents',
+    loadComponent: () => import('./administrator-panel/incidents/incidents.page').then( m => m.IncidentsPage)
+  },
+  {
+    path: 'pdf-reports',
+    loadComponent: () => import('./administrator-panel/pdf-reports/pdf-reports.page').then( m => m.PdfReportsPage)
+  },
+  {
+    path: 'add-user',
+    loadComponent: () => import('./administrator-panel/user-management/add-user/add-user.page').then( m => m.AddUserPage)
   },
 ];
