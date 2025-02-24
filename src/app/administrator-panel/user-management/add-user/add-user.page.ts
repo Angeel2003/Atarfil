@@ -66,7 +66,6 @@ export class AddUserPage implements OnInit {
       });
       await alert.present();
 
-      // Después de crear el usuario, se puede navegar a la página de gestión de usuarios
       this.router.navigate(['/user-management']);
     } catch (error) {
       console.error('Error al crear usuario:', error);
