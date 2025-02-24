@@ -89,6 +89,37 @@ app.get('/usuarios', async (req, res) => {
   }
 });
 
+// Endpoint para dar de alta (crear) un nuevo usuario
+app.post('/usuarios', async (req, res) => {
+  try {
+    const { nombreCompleto, correo, telefono, tipoUsuario, idioma } = req.body;
+
+    // Validación básica de campos obligatorios
+    if (!nombreCompleto || !correo || !tipoUsuario || !idioma) {
+      return res.status(400).json({ error: 'Campos obligatorios no proporcionados.' });
+    }
+
+    // Si el teléfono es opcional, se usa null si está vacío
+    const telefonoValue = (telefono && telefono.trim() !== '') ? telefono : null;
+
+    // Se mapean los campos recibidos a los nombres de las columnas en la base de datos
+    const insertQuery = `
+      INSERT INTO usuarios (nombre_completo, correo_electronico, numero_telefono, tipo_usuario, idioma)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *;
+    `;
+    const values = [nombreCompleto, correo, telefonoValue, tipoUsuario, idioma];
+
+    const result = await pool.query(insertQuery, values);
+
+    // Se devuelve el usuario creado
+    res.status(201).json({ message: 'Usuario creado correctamente', usuario: result.rows[0] });
+  } catch (error) {
+    console.error('Error al crear usuario:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 // Endpoint para eliminar un usuario
 app.delete('/usuarios/:id', async (req, res) => {
   const userId = req.params.id;

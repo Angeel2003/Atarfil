@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonBackButton, IonButton, IonButtons, IonIcon, AlertController, IonList, IonItem, IonLabel } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { ViewWillEnter } from '@ionic/angular';
 
 import { trash } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
@@ -15,7 +16,7 @@ import { addIcons } from 'ionicons';
   standalone: true,
   imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonBackButton, IonButton, IonButtons, IonIcon, IonList, IonItem, IonLabel]
 })
-export class UserManagementPage implements OnInit {
+export class UserManagementPage implements ViewWillEnter {
   users: any[] = [];
   private apiUrl = 'http://192.168.1.135:3000';
 
@@ -24,8 +25,7 @@ export class UserManagementPage implements OnInit {
       trash
     })
   }
-
-  ngOnInit() {
+  ionViewWillEnter() {
     this.loadUsers();
   }
 

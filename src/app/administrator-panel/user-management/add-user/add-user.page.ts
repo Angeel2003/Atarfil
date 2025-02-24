@@ -29,29 +29,53 @@ export class AddUserPage implements OnInit {
   }
 
   async onSubmit() {
+    // Expresiónes regulares
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\+\d+$/;
+
     this.usuario.nombreCompleto = (<HTMLInputElement>document.getElementById('nombreCompleto')).value;
+    this.usuario.correo = (<HTMLInputElement>document.getElementById('correo')).value;
+    this.usuario.telefono = (<HTMLInputElement>document.getElementById('telefono')).value;
+    this.usuario.tipoUsuario = (<HTMLInputElement>document.getElementById('tipoUsuario')).value;
+    this.usuario.idioma = (<HTMLInputElement>document.getElementById('idioma')).value;
 
-    // try {
-    //   const response = await this.http.post<any>(`${this.apiUrl}/usuarios`, this.usuario).toPromise();
+    if (!emailRegex.test(this.usuario.correo)) {
+      alert("El correo no es válido");
+      return;
+    }
 
-    //   const alert = await this.alertController.create({
-    //     header: 'Éxito',
-    //     message: 'Usuario creado correctamente',
-    //     buttons: ['OK']
-    //   });
-    //   await alert.present();
+    if (this.usuario.telefono.trim() !== "" && !phoneRegex.test(this.usuario.telefono)) {
+      alert("El número de teléfono no es válido");
+      return;
+    }
 
-    //   // Después de crear el usuario, se puede navegar a la página de gestión de usuarios
-    //   this.router.navigate(['/user-management']);
-    // } catch (error) {
-    //   console.error('Error al crear usuario:', error);
-    //   const alert = await this.alertController.create({
-    //     header: 'Error',
-    //     message: 'No se pudo crear el usuario. Inténtalo de nuevo.',
-    //     buttons: ['OK']
-    //   });
-    //   await alert.present();
-    // }
+    // Verificar que se hayan seleccionado los valores
+    if (this.usuario.nombreCompleto.trim() === "" || this.usuario.tipoUsuario.trim() === ""
+        || this.usuario.idioma.trim() === "") {
+      alert('Por favor, complete los campos necesarios');
+      return;
+    }
+
+    try {
+      const response = await this.http.post<any>(`${this.apiUrl}/usuarios`, this.usuario).toPromise();
+
+      const alert = await this.alertController.create({
+        header: 'Éxito',
+        message: 'Usuario creado correctamente',
+        buttons: ['OK']
+      });
+      await alert.present();
+
+      // Después de crear el usuario, se puede navegar a la página de gestión de usuarios
+      this.router.navigate(['/user-management']);
+    } catch (error) {
+      console.error('Error al crear usuario:', error);
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'No se pudo crear el usuario. Inténtalo de nuevo.',
+        buttons: ['OK']
+      });
+      await alert.present();
+    }
   }
-
 }

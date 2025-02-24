@@ -74,10 +74,10 @@ export class HomePage implements OnInit{
           };
 
           if (response.usuario && response.usuario.tipo_usuario) {
-            if (response.usuario.tipo_usuario === 'operador') {
+            if (response.usuario.tipo_usuario === 'Operador') {
               this.router.navigate(['/select-place'], navigationExtras);
               this.vaciarCampos();
-            } else if (response.usuario.tipo_usuario === 'administrador') {
+            } else if (response.usuario.tipo_usuario === 'Administrador') {
               this.router.navigate(['/administrator-panel'], navigationExtras);
               this.vaciarCampos();
             } else {

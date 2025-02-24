@@ -26,19 +26,19 @@
     <!-- Correo -->
     <ion-item>
       <ion-label position="floating">Correo</ion-label>
-      <ion-input type="email" name="correo" required></ion-input>
+      <ion-input id="correo" type="email" name="correo" required></ion-input>
     </ion-item>
 
     <!-- Número de Teléfono (opcional) -->
     <ion-item>
       <ion-label position="floating">Número de Teléfono</ion-label>
-      <ion-input type="tel" name="telefono"></ion-input>
+      <ion-input id="telefono" type="tel" name="telefono"></ion-input>
     </ion-item>
 
     <!-- Tipo de Usuario -->
     <ion-item>
       <ion-label>Tipo de Usuario</ion-label>
-      <ion-select name="tipoUsuario" placeholder="Seleccione" required>
+      <ion-select id="tipoUsuario" name="tipoUsuario" placeholder="Seleccione" required>
         <ion-select-option value="Operador">Operador</ion-select-option>
         <ion-select-option value="Administrador">Administrador</ion-select-option>
       </ion-select>
@@ -47,7 +47,7 @@
     <!-- Idioma -->
     <ion-item>
       <ion-label>Idioma</ion-label>
-      <ion-select name="idioma" placeholder="Seleccione" required>
+      <ion-select id="idioma" name="idioma" placeholder="Seleccione" required>
         <ion-select-option value="Castellano">Castellano</ion-select-option>
         <ion-select-option value="Ingles">Ingles</ion-select-option>
       </ion-select>
