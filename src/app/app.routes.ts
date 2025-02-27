@@ -41,5 +41,13 @@ export const routes: Routes = [
   {
     path: 'add-user',
     loadComponent: () => import('./administrator-panel/user-management/add-user/add-user.page').then( m => m.AddUserPage)
+  },  {
+    path: 'add-urgent-task',
+    loadComponent: () => import('./administrator-panel/incidents/add-urgent-task/add-urgent-task.page').then( m => m.AddUrgentTaskPage)
   },
+  {
+    path: 'add-periodic-task',
+    loadComponent: () => import('./administrator-panel/incidents/add-periodic-task/add-periodic-task.page').then( m => m.AddPeriodicTaskPage)
+  },
+
 ];

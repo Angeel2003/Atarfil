@@ -136,6 +136,66 @@ app.delete('/usuarios/:id', async (req, res) => {
   }
 });
 
+// Endpoint para listar todas las incidencias
+app.get('/incidencias', async (req, res) => {
+  try {
+    const resultado = await pool.query('SELECT * FROM incidencias ORDER BY id DESC');
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error('Error al obtener incidencias:', error);
+    res.status(500).json({ message: 'Error al obtener incidencias' });
+  }
+});
+
+// Endpoint para listar los usuarios operadores
+app.get('/usuarios-operadores', async (req, res) => {
+  try {
+    const resultado = await pool.query("SELECT id, nombre_completo FROM usuarios WHERE tipo_usuario = 'Operador'");
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error('Error al obtener operadores:', error);
+    res.status(500).json({ message: 'Error al obtener operadores' });
+  }
+});
+
+// Endpoint para listar todas las tareas urgentes
+app.get('/tareas-urgentes', async (req, res) => {
+  try {
+    const resultado = await pool.query('SELECT * FROM tareas_urgentes ORDER BY id DESC');
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error('Error al obtener tareas urgentes:', error);
+    res.status(500).json({ message: 'Error al obtener tareas urgentes' });
+  }
+});
+
+// Endpoint para crear una nueva tarea urgente
+app.post('/tareas-urgentes', async (req, res) => {
+  try {
+    const { usuario_asignado, tarea_a_asignar, fecha, hora } = req.body;
+
+    // Verificar que los datos requeridos están presentes
+    if (!usuario_asignado || !tarea_a_asignar || !fecha || !hora) {
+      return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    }
+
+    // Insertar la tarea urgente en la base de datos
+    const insertQuery = `
+      INSERT INTO tareas_urgentes (usuario_asignado, tarea_a_asignar, fecha, hora)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *;
+    `;
+    const values = [usuario_asignado, tarea_a_asignar, fecha, hora];
+
+    const result = await pool.query(insertQuery, values);
+
+    res.status(201).json({ message: 'Tarea urgente creada con éxito', tarea: result.rows[0] });
+  } catch (error) {
+    console.error('Error al insertar tarea urgente:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 // Iniciar el servidor en el puerto 3000
 const PORT = 3000;
 app.listen(PORT, () => {

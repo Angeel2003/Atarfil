@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/incidents"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets/images/logo.png" alt="Logo" class="logo">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="true" shape="round">
+        <ion-icon slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  
+  <form (ngSubmit)="onSubmit()">
+
+    <!-- Seleccionar Operador -->
+    <ion-item>
+      <ion-label>Operador</ion-label>
+      <ion-select id="usuario_asignado" name="usuario_asignado" placeholder="Seleccione" required>
+        <ion-select-option *ngFor="let usuario of usuarios" [value]="usuario.id">
+          {{ usuario.nombre_completo }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Tarea a Asignar -->
+    <ion-item>
+      <ion-label position="floating">Tarea a Asignar</ion-label>
+      <ion-textarea id="tarea_a_asignar" class="large-textarea" name="tarea_a_asignar" placeholder="Escribe aquí" required></ion-textarea>
+    </ion-item>
+
+    <!-- Fecha -->
+    <ion-item>
+      <ion-label>Fecha</ion-label>
+      <ion-input id="fecha" class="small-input" type="date" name="fecha" required></ion-input>
+    </ion-item>
+
+    <!-- Hora -->
+    <ion-item>
+      <ion-label>Hora</ion-label>
+      <ion-input id="hora" class="small-input" type="time" name="hora" required></ion-input>
+    </ion-item>
+
+    <!-- Botón Confirmar -->
+    <div class="button-container">
+      <ion-button class="confirm-button" type="submit" expand="block" shape="round">
+        Confirmar
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
