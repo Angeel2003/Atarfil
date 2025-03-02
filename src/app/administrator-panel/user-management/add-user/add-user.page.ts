@@ -50,8 +50,7 @@ export class AddUserPage implements OnInit {
     }
 
     // Verificar que se hayan seleccionado los valores
-    if (this.usuario.nombreCompleto.trim() === "" || this.usuario.tipoUsuario.trim() === ""
-        || this.usuario.idioma.trim() === "") {
+    if (this.usuario.nombreCompleto.trim() === "") {
       alert('Por favor, complete los campos necesarios');
       return;
     }
@@ -67,11 +66,19 @@ export class AddUserPage implements OnInit {
       await alert.present();
 
       this.router.navigate(['/user-management']);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al crear usuario:', error);
+  
+      let errorMessage = 'No se pudo crear el usuario. Inténtalo de nuevo.';
+  
+      // Si el error viene del servidor y es un 400, mostrar mensaje personalizado
+      if (error.status === 400 && error.error?.error) {
+        errorMessage = error.error.error;
+      }
+  
       const alert = await this.alertController.create({
         header: 'Error',
-        message: 'No se pudo crear el usuario. Inténtalo de nuevo.',
+        message: errorMessage,
         buttons: ['OK']
       });
       await alert.present();

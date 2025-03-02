@@ -46,8 +46,6 @@ export class AddUrgentTaskPage implements OnInit {
     this.tarea_urgente.tarea_a_asignar = (<HTMLInputElement>document.getElementById('tarea_a_asignar')).value;
     this.tarea_urgente.fecha = (<HTMLInputElement>document.getElementById('fecha')).value;
     this.tarea_urgente.hora = (<HTMLInputElement>document.getElementById('hora')).value;
-    
-    console.log('Tarea Urgente:', this.tarea_urgente);
 
     // Verificar que se hayan seleccionado los valores
     if (this.tarea_urgente.usuario_asignado === "" || this.tarea_urgente.tarea_a_asignar.trim() === ""

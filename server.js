@@ -99,6 +99,13 @@ app.post('/usuarios', async (req, res) => {
       return res.status(400).json({ error: 'Campos obligatorios no proporcionados.' });
     }
 
+    // Verificar si el correo ya está registrado
+    const existingUser = await pool.query('SELECT * FROM usuarios WHERE correo_electronico = $1', [correo]);
+
+    if (existingUser.rowCount > 0) {
+      return res.status(400).json({ error: 'El correo ya está registrado' });
+    }
+
     // Si el teléfono es opcional, se usa null si está vacío
     const telefonoValue = (telefono && telefono.trim() !== '') ? telefono : null;
 
@@ -193,6 +200,39 @@ app.post('/tareas-urgentes', async (req, res) => {
   } catch (error) {
     console.error('Error al insertar tarea urgente:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Endpoint para listar todas las tareas periodicas
+app.get('/tareas-periodicas', async (req, res) => {
+  try {
+    const resultado = await pool.query('SELECT * FROM tareas_periodicas ORDER BY id ASC');
+    res.json(resultado.rows);
+  } catch (error) {
+    console.error('Error al obtener tareas periodicas:', error);
+    res.status(500).json({ message: 'Error al obtener tareas periodicas' });
+  }
+});
+
+// Endpoint para crear una nueva tarea periodica
+app.post('/tareas-periodicas', async (req, res) => {
+  try {
+    const { area, inspeccion, periodicidad, zonas } = req.body;
+
+    // Insertar la tarea periódica
+    const result = await pool.query(
+      'INSERT INTO tareas_periodicas (area, inspeccion, periodicidad, zonas) VALUES ($1, $2, $3, $4) RETURNING *',
+      [area, inspeccion, periodicidad, JSON.stringify(zonas)]
+    );
+
+    res.status(201).json({
+      message: 'Tarea periódica creada con éxito',
+      tarea: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error('❌ Error al insertar tarea periódica:', error);
+    res.status(500).json({ error: 'Error al insertar tarea periódica' });
   }
 });
 
