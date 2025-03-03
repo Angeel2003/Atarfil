@@ -18,13 +18,14 @@ import { addIcons } from 'ionicons';
 })
 export class UserManagementPage implements ViewWillEnter {
   users: any[] = [];
-  private apiUrl = 'http://192.168.1.135:3000';
+  private apiUrl = 'http://localhost:3000';
 
   constructor(private router: Router, private http: HttpClient, private alertController: AlertController) {
     addIcons({
       trash
     })
   }
+  
   ionViewWillEnter() {
     this.loadUsers();
   }

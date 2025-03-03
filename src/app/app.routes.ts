@@ -49,5 +49,9 @@ export const routes: Routes = [
     path: 'add-periodic-task',
     loadComponent: () => import('./administrator-panel/incidents/add-periodic-task/add-periodic-task.page').then( m => m.AddPeriodicTaskPage)
   },
+  {
+    path: 'incident-detail',
+    loadComponent: () => import('./administrator-panel/incidents/incident-detail/incident-detail.page').then( m => m.IncidentDetailPage)
+  },
 
 ];

@@ -154,6 +154,22 @@ app.get('/incidencias', async (req, res) => {
   }
 });
 
+// Endpoint para eliminar una incidencia
+app.delete('/incidencias/:id', async (req, res) => {
+  const incidentId = req.params.id;
+  try {
+    const resultado = await pool.query('DELETE FROM incidencias WHERE id = $1', [incidentId]);
+    if (resultado.rowCount > 0) {
+      res.json({ message: 'Incidencia eliminada con éxito' });
+    } else {
+      res.status(404).json({ error: 'Incidencia no encontrada' });
+    }
+  } catch (error) {
+    console.error('Error al eliminar incidencia:', error);
+    res.status(500).json({ error: 'Error al eliminar incidencia' });
+  }
+});
+
 // Endpoint para listar los usuarios operadores
 app.get('/usuarios-operadores', async (req, res) => {
   try {

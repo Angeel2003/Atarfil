@@ -25,7 +25,7 @@
   </div>
 
   <ion-list lines="none">
-    <ion-item class="incident-item" *ngFor="let incident of incidents">
+    <ion-item class="incident-item" *ngFor="let incident of incidents" (click)="goIncident(incident.id)">
       <ion-label>
         <h2>{{ incident.area }}</h2>
         <p>
