@@ -14,7 +14,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AddUrgentTaskPage implements OnInit {
   tarea_urgente = {
-    usuario_asignado: '',
+    usuario_asignado: [] as number[],
     tarea_a_asignar: '',
     fecha: '',
     hora: ''
@@ -42,20 +42,19 @@ export class AddUrgentTaskPage implements OnInit {
   }
 
   async onSubmit() {
-    this.tarea_urgente.usuario_asignado = (<HTMLInputElement>document.getElementById('usuario_asignado')).value;
-    this.tarea_urgente.tarea_a_asignar = (<HTMLInputElement>document.getElementById('tarea_a_asignar')).value;
-    this.tarea_urgente.fecha = (<HTMLInputElement>document.getElementById('fecha')).value;
-    this.tarea_urgente.hora = (<HTMLInputElement>document.getElementById('hora')).value;
-
-    // Verificar que se hayan seleccionado los valores
-    if (this.tarea_urgente.usuario_asignado === "" || this.tarea_urgente.tarea_a_asignar.trim() === ""
-        || this.tarea_urgente.fecha.trim() === "" || this.tarea_urgente.hora.trim() === "") {
-      alert('Por favor, complete los campos necesarios');
+    if (this.tarea_urgente.usuario_asignado.length === 0 || this.tarea_urgente.tarea_a_asignar.trim() === "" ||
+    this.tarea_urgente.fecha.trim() === "" || this.tarea_urgente.hora.trim() === "") {
+      alert('Por favor, complete todos los campos obligatorios.');
       return;
     }
 
+    const dataToSend = {
+      ...this.tarea_urgente,
+      usuario_asignado: JSON.stringify(this.tarea_urgente.usuario_asignado)
+    };
+
     try {
-      const response = await this.http.post<any>(`${this.apiUrl}/tareas-urgentes`, this.tarea_urgente).toPromise();
+      const response = await this.http.post<any>(`${this.apiUrl}/tareas-urgentes`, dataToSend).toPromise();
 
       const alert = await this.alertController.create({
         header: 'Éxito',
@@ -64,12 +63,26 @@ export class AddUrgentTaskPage implements OnInit {
       });
       await alert.present();
 
+      this.tarea_urgente = {
+        usuario_asignado: [],
+        tarea_a_asignar: '',
+        fecha: '',
+        hora: ''
+      };
+
       this.router.navigate(['/incidents']);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al crear tarea urgente:', error);
+
+      let errorMessage = 'No se pudo crear la tarea urgente. Inténtalo de nuevo.';
+
+      if (error.status === 400 && error.error?.error) {
+        errorMessage = error.error.error;
+      }
+
       const alert = await this.alertController.create({
         header: 'Error',
-        message: 'No se pudo crear la tarea urgente. Inténtalo de nuevo.',
+        message: errorMessage,
         buttons: ['OK']
       });
       await alert.present();

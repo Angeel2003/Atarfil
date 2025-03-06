@@ -19,3 +19,46 @@ ion-title {
     max-height: 50px;
     width: auto;
 }
+
+/* Estilos para las secciones */
+.section-title {
+    font-size: 1.5rem;
+    padding: 10px 15px;
+    color: #243270;
+}
+
+/* Contenedor de tareas */
+.task-container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilos de las tarjetas de tareas */
+.task-card {
+    border-radius: 10px;
+}
+
+ion-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #243270;
+}
+
+p {
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Estilo para la etiqueta de periodicidad */
+.task-tag {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #243270;
+    align-self: flex-end;
+}

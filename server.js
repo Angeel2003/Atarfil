@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 const cors = require('cors');
 
+const cron = require('node-cron');
+
 const app = express();
 const saltRounds = 10;
 
@@ -250,6 +252,81 @@ app.post('/tareas-periodicas', async (req, res) => {
     console.error('❌ Error al insertar tarea periódica:', error);
     res.status(500).json({ error: 'Error al insertar tarea periódica' });
   }
+});
+
+// Obtener todas las tareas periódicas programadas para el día actual
+app.get('/tareas-a-realizar', async (req, res) => {
+  try {
+    const fechaHoy = new Date().toISOString().split('T')[0]; // Obtiene la fecha actual
+
+    const result = await pool.query(`
+      SELECT tp.*, ta.fecha 
+      FROM tareas_a_realizar ta
+      JOIN tareas_periodicas tp ON ta.tarea_periodica_id = tp.id
+      WHERE ta.fecha = $1
+      ORDER BY ta.fecha;
+    `, [fechaHoy]);
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener tareas del operador:', error);
+    res.status(500).json({ error: 'Error al obtener tareas del operador' });
+  }
+});
+
+// Obtener tareas urgentes asignadas a un operador
+app.get('/tareas-urgentes/:usuarioId', async (req, res) => {
+  try {
+    const { usuarioId } = req.params;
+
+    const result = await pool.query(
+      `SELECT * FROM tareas_urgentes WHERE usuario_asignado @> $1 ORDER BY fecha, hora`,
+      [`[${usuarioId}]`]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener tareas urgentes del operador:', error);
+    res.status(500).json({ error: 'Error al obtener tareas urgentes' });
+  }
+});
+
+
+
+// Tarea programada para ejecutarse a las 12:00 AM todos los días
+cron.schedule('0 0 * * *', async () => {
+    try {
+        console.log('Ejecutando tarea programada: Insertar tareas periódicas...');
+        
+        const fechaHoy = new Date().toISOString().split('T')[0];
+
+        const result = await pool.query(`
+            SELECT id FROM tareas_periodicas
+            WHERE periodicidad = 'Diaria'
+            OR (periodicidad = 'Semanal' AND EXTRACT(DOW FROM NOW()) = 1) -- Lunes
+            OR (periodicidad = 'mensual' AND EXTRACT(DAY FROM NOW()) = 1) -- Día 1 del mes
+            OR (periodicidad = 'Semestral' AND EXTRACT(MONTH FROM NOW()) IN (1, 7) AND EXTRACT(DAY FROM NOW()) = 1) -- Enero y Julio
+            OR (periodicidad = 'Anual' AND EXTRACT(MONTH FROM NOW()) = 1 AND EXTRACT(DAY FROM NOW()) = 1) -- 1 de Enero
+        `);
+
+        for (const tarea of result.rows) {
+            const checkExist = await pool.query(
+                'SELECT * FROM tareas_a_realizar WHERE tarea_periodica_id = $1 AND fecha = $2',
+                [tarea.id, fechaHoy]
+            );
+
+            if (checkExist.rowCount === 0) {
+                await pool.query(
+                    'INSERT INTO tareas_a_realizar (tarea_periodica_id, fecha) VALUES ($1, $2)',
+                    [tarea.id, fechaHoy]
+                );
+            }
+        }
+
+        console.log('Tareas periódicas insertadas correctamente.');
+    } catch (error) {
+        console.error('Error al insertar tareas periódicas:', error);
+    }
 });
 
 // Iniciar el servidor en el puerto 3000
