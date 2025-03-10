@@ -291,10 +291,22 @@ app.get('/tareas-urgentes/:usuarioId', async (req, res) => {
   }
 });
 
+// Eliminar una tarea urgente por su ID
+app.delete('/tareas-urgentes/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query('DELETE FROM tareas_urgentes WHERE id = $1', [id]);
+    res.json({ message: 'Tarea eliminada correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar la tarea urgente:', error);
+    res.status(500).json({ error: 'No se pudo eliminar la tarea urgente' });
+  }
+});
+
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('0 0 * * *', async () => {
+cron.schedule('00 00 * * *', async () => {
     try {
         console.log('Ejecutando tarea programada: Insertar tareas periódicas...');
         

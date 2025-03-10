@@ -48,6 +48,9 @@ h2 {
     font-size: 1.2rem;
     font-weight: bold;
     color: #243270;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 p {
@@ -55,10 +58,15 @@ p {
     color: #333;
 }
 
-/* Estilo para la etiqueta de periodicidad */
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
 .task-tag {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: bold;
     color: #243270;
-    align-self: flex-end;
 }

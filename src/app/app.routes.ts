@@ -53,5 +53,13 @@ export const routes: Routes = [
     path: 'incident-detail',
     loadComponent: () => import('./administrator-panel/incidents/incident-detail/incident-detail.page').then( m => m.IncidentDetailPage)
   },
+  {
+    path: 'urgent-task-detail',
+    loadComponent: () => import('./operator-panel/urgent-task-detail/urgent-task-detail.page').then( m => m.UrgentTaskDetailPage)
+  },
+  {
+    path: 'periodic-task-detail',
+    loadComponent: () => import('./operator-panel/periodic-task-detail/periodic-task-detail.page').then( m => m.PeriodicTaskDetailPage)
+  },
 
 ];

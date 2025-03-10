@@ -22,14 +22,16 @@
     </ion-list-header>
 
     <div class="task-container">
-      <ion-card *ngFor="let tarea of tareas_periodicas" class="task-card">
+      <ion-card *ngFor="let tarea of tareas_periodicas" class="task-card" (click)="verTareaPeriodica(tarea)">
         <ion-card-content>
           <h2>{{ tarea.area }}</h2>
-          <p>Inspección {{ tarea.inspeccion }}</p>
-          <span class="task-tag">{{ tarea.periodicidad }}</span>
+          <div class="task-header">
+            <p>Inspección {{ tarea.inspeccion }}</p>
+            <span class="task-tag">{{ tarea.periodicidad }}</span>
+          </div>
         </ion-card-content>
       </ion-card>
-    </div>
+    </div>    
   </div>
 
   <!-- Sección de Tareas Urgentes -->
@@ -39,11 +41,10 @@
     </ion-list-header>
 
     <div class="task-container">
-      <ion-card *ngFor="let tarea of tareas_urgentes" class="task-card">
+      <ion-card *ngFor="let tarea of tareas_urgentes" class="task-card" (click)="verTareaUrgente(tarea)">
         <ion-card-content>
           <h2>{{ tarea.tarea_a_asignar }}</h2>
-          <p><strong>Fecha: </strong>{{ tarea.fecha | date: 'd \'de\' MMMM \'de\' yyyy\'.\'' }}</p>
-          <p><strong>Hora: </strong>{{ tarea.fecha | date: 'HH:mm' }}</p>
+          <p><strong>Fecha: </strong>{{ tarea.fechaCompleta | date: 'd \'de\' MMMM \'de\' yyyy\'' }} &nbsp; <strong>Hora: </strong>{{ tarea.fechaCompleta | date: 'HH:mm' }}</p>
         </ion-card-content>
       </ion-card>
     </div>

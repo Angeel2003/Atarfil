@@ -1,0 +1,113 @@
+ion-toolbar {
+    --padding-top: 20px;
+    --padding-bottom: 5px;
+  
+    display: flex;
+    justify-content: center;
+}
+
+ion-back-button {
+    color: #243270;
+}
+
+ion-title {
+    text-align: center;
+    width: 100%;
+}
+
+.logo {
+    max-height: 50px;
+    width: auto;
+}
+
+ion-accordion-group {
+    margin-top: 10px;
+}
+
+ion-accordion {
+    max-width: 650px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 95%;
+    margin: 10px auto;
+}
+
+.zona-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #243270;
+}
+
+ion-item {
+    --background: #dedede;
+    border-radius: 10px;
+    margin: 6px;
+}
+
+ion-checkbox {
+--size: 20px;
+}
+
+.checkbox-pendiente {
+    --border-color: red;
+    --background: red;
+}
+
+.checkbox-pendiente::part(container) {
+    border: 2px solid red;
+    background: red;
+}
+
+.checkbox-completado {
+    --border-color: green;
+    --background: green;
+}
+
+.checkbox-completado::part(container) {
+    border: 2px solid green;
+    background: green;
+}
+
+.checkbox-no-completado {
+    --border-color: yellow;
+    --background: yellow;
+}
+
+.checkbox-no-completado::part(container) {
+    border: 2px solid yellow;
+    background: yellow;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icono-check {
+    color: green;
+    font-size: 20px;
+}
+
+.icono-cruz {
+    color: red;
+    font-size: 20px;
+}
+
+
+.button-group {
+    display: flex;
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+
+    .terminar-button {
+        width: 200px;
+        height: 50px;
+        --background: #243270;
+        --color: #fff;
+        margin-bottom: 30px;
+        margin: 20px auto;
+    }
+}

@@ -20,7 +20,11 @@ export class OperatorPanelPage implements OnInit {
 
   private apiUrl = 'http://localhost:3000';
 
-  constructor(private router: Router, private http: HttpClient) { }
+  constructor(private router: Router, private http: HttpClient) {
+    this.router.events.subscribe(() => {
+      this.loadTareas();
+    });
+  }
 
   ngOnInit() {
     const navigationUser = this.router.getCurrentNavigation();
@@ -54,12 +58,26 @@ export class OperatorPanelPage implements OnInit {
     // Obtener tareas urgentes del operador
     this.http.get<any[]>(`${this.apiUrl}/tareas-urgentes/${this.usuario.id}`).subscribe({
       next: (data) => {
-        this.tareas_urgentes = data;
+        this.tareas_urgentes = data.map(tarea => {
+          const fecha = new Date(tarea.fecha);
+          const [hours, minutes, seconds] = tarea.hora.split(':').map(Number);
+          const fechaCompleta = new Date(fecha);
+          fechaCompleta.setHours(hours, minutes, seconds || 0);
+          return { ...tarea, fechaCompleta };
+        });
       },
       error: (err) => {
         console.error('Error al cargar tareas urgentes:', err);
       }
     });
   }
+
+  verTareaUrgente(tarea: any) {
+    this.router.navigate(['/urgent-task-detail'], { state: { tarea } });
+  }
+
+  verTareaPeriodica(tarea: any) {
+    this.router.navigate(['/periodic-task-detail'], { state: { tarea } });
+  }  
 
 }
