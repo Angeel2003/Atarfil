@@ -30,11 +30,11 @@ export class PeriodicTaskDetailPage implements OnInit {
     if (navigation?.extras.state && navigation.extras.state['tarea']) {
       this.tarea = navigation.extras.state['tarea'];
 
-      // Agregar la propiedad 'completada' a cada subtarea
+      // Agregar la propiedad 'no-iniciada' a cada subtarea
       this.tarea.zonas.forEach((zona: any) => {
         zona.subtareas = zona.subtareas.map((subtarea: string) => ({
           nombre: subtarea,
-          estado: 'pendiente'
+          estado: 'no-iniciada'
         }));
       });
     } else {
@@ -44,14 +44,13 @@ export class PeriodicTaskDetailPage implements OnInit {
   }
 
   cambiarEstado(subtarea: any) {
-    if (subtarea.estado === 'pendiente') {
-      subtarea.estado = 'completado';
-    } else if (subtarea.estado === 'completado') {
-      subtarea.estado = 'no-completado';
-    } else {
-      subtarea.estado = 'pendiente';
-    }
+    // const estados = ['no-iniciada', 'en-pausa', 'completado'];
+    // const indiceActual = estados.indexOf(subtarea.estado);
+    // console.log(indiceActual)
+  
+    // subtarea.estado = estados[(indiceActual + 1) % estados.length];
   }
+  
 
   async completarTarea() {
     const alert = await this.alertController.create({

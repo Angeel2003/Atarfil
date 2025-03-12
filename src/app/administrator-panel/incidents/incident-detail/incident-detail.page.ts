@@ -45,7 +45,7 @@ export class IncidentDetailPage implements OnInit {
     this.router.navigate(['/add-urgent-task']);
   }
 
-  // Muestra una ventana de confirmación para eliminar al usuario
+  // Muestra una ventana de confirmación para eliminar la incidencia
   async confirmDelete(incident: any) {
     const alert = await this.alertController.create({
       header: 'Confirmar eliminación',
@@ -78,5 +78,4 @@ export class IncidentDetailPage implements OnInit {
       }
     });
   }
-
 }

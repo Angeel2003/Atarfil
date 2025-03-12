@@ -20,20 +20,17 @@ ion-title {
     width: auto;
 }
 
-/* Estilos para las secciones */
 .section-title {
     font-size: 1.5rem;
     padding: 10px 15px;
     color: #243270;
 }
 
-/* Contenedor de tareas */
 .task-container {
     display: flex;
     flex-direction: column;
 }
 
-/* Estilos de las tarjetas de tareas */
 .task-card {
     border-radius: 10px;
 }
@@ -69,4 +66,9 @@ p {
     font-size: 1.1rem;
     font-weight: bold;
     color: #243270;
+}
+
+.tareas {
+    max-width: 650px;
+    margin: 0 auto;
 }

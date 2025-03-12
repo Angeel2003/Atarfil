@@ -156,6 +156,38 @@ app.get('/incidencias', async (req, res) => {
   }
 });
 
+// Obtener todas las tareas urgentes que han sido completadas
+app.get('/tareas-urgentes-completadas', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM tareas_urgentes 
+       WHERE estado = 'completada' 
+       ORDER BY fecha, hora`
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener tareas completadas:', error);
+    res.status(500).json({ error: 'Error al obtener tareas completadas' });
+  }
+});
+
+// Endpoint para eliminar una tarea completada
+app.delete('/tareas-urgentes-completadas/:id', async (req, res) => {
+  const taskId = req.params.id;
+  try {
+    const resultado = await pool.query('DELETE FROM tareas_urgentes WHERE id = $1', [taskId]);
+    if (resultado.rowCount > 0) {
+      res.json({ message: 'Tarea eliminada con éxito' });
+    } else {
+      res.status(404).json({ error: 'Tarea no encontrada' });
+    }
+  } catch (error) {
+    console.error('Error al eliminar tarea:', error);
+    res.status(500).json({ error: 'Error al eliminar tarea' });
+  }
+});
+
 // Endpoint para eliminar una incidencia
 app.delete('/incidencias/:id', async (req, res) => {
   const incidentId = req.params.id;
@@ -274,14 +306,21 @@ app.get('/tareas-a-realizar', async (req, res) => {
   }
 });
 
-// Obtener tareas urgentes asignadas a un operador
+// Obtener tareas urgentes asignadas a un operador para la fecha actual y con estado "pendiente"
 app.get('/tareas-urgentes/:usuarioId', async (req, res) => {
   try {
     const { usuarioId } = req.params;
 
+    // Obtener la fecha actual en formato YYYY-MM-DD
+    const today = new Date().toISOString().split('T')[0];
+
     const result = await pool.query(
-      `SELECT * FROM tareas_urgentes WHERE usuario_asignado @> $1 ORDER BY fecha, hora`,
-      [`[${usuarioId}]`]
+      `SELECT * FROM tareas_urgentes 
+       WHERE usuario_asignado @> $1 
+       AND fecha = $2 
+       AND estado = 'pendiente' 
+       ORDER BY fecha, hora`,
+      [`[${usuarioId}]`, today]
     );
 
     res.json(result.rows);
@@ -291,22 +330,34 @@ app.get('/tareas-urgentes/:usuarioId', async (req, res) => {
   }
 });
 
-// Eliminar una tarea urgente por su ID
-app.delete('/tareas-urgentes/:id', async (req, res) => {
+// Marcar una tarea urgente como "completada"
+app.patch('/tareas-urgentes/:id/completar', async (req, res) => {
   try {
     const { id } = req.params;
-    await pool.query('DELETE FROM tareas_urgentes WHERE id = $1', [id]);
-    res.json({ message: 'Tarea eliminada correctamente' });
+
+    const result = await pool.query(
+      `UPDATE tareas_urgentes 
+       SET estado = 'completada' 
+       WHERE id = $1 
+       RETURNING *`,
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Tarea urgente no encontrada' });
+    }
+
+    res.json({ message: 'Tarea marcada como completada', tarea: result.rows[0] });
   } catch (error) {
-    console.error('Error al eliminar la tarea urgente:', error);
-    res.status(500).json({ error: 'No se pudo eliminar la tarea urgente' });
+    console.error('Error al actualizar el estado de la tarea urgente:', error);
+    res.status(500).json({ error: 'No se pudo actualizar la tarea urgente' });
   }
 });
 
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('00 00 * * *', async () => {
+cron.schedule('41 11 * * *', async () => {
     try {
         console.log('Ejecutando tarea programada: Insertar tareas periódicas...');
         
@@ -316,7 +367,7 @@ cron.schedule('00 00 * * *', async () => {
             SELECT id FROM tareas_periodicas
             WHERE periodicidad = 'Diaria'
             OR (periodicidad = 'Semanal' AND EXTRACT(DOW FROM NOW()) = 1) -- Lunes
-            OR (periodicidad = 'mensual' AND EXTRACT(DAY FROM NOW()) = 1) -- Día 1 del mes
+            OR (periodicidad = 'Mensual' AND EXTRACT(DAY FROM NOW()) = 1) -- Día 1 del mes
             OR (periodicidad = 'Semestral' AND EXTRACT(MONTH FROM NOW()) IN (1, 7) AND EXTRACT(DAY FROM NOW()) = 1) -- Enero y Julio
             OR (periodicidad = 'Anual' AND EXTRACT(MONTH FROM NOW()) = 1 AND EXTRACT(DAY FROM NOW()) = 1) -- 1 de Enero
         `);

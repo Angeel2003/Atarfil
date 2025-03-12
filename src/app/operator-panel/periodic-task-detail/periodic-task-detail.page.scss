@@ -49,19 +49,9 @@ ion-checkbox {
 --size: 20px;
 }
 
-.checkbox-pendiente {
-    --border-color: red;
-    --background: red;
-}
-
-.checkbox-pendiente::part(container) {
+.checkbox-no-iniciada::part(container) {
     border: 2px solid red;
     background: red;
-}
-
-.checkbox-completado {
-    --border-color: green;
-    --background: green;
 }
 
 .checkbox-completado::part(container) {
@@ -69,32 +59,10 @@ ion-checkbox {
     background: green;
 }
 
-.checkbox-no-completado {
-    --border-color: yellow;
-    --background: yellow;
-}
-
-.checkbox-no-completado::part(container) {
+.checkbox-en-pausa::part(container) {
     border: 2px solid yellow;
     background: yellow;
 }
-
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.icono-check {
-    color: green;
-    font-size: 20px;
-}
-
-.icono-cruz {
-    color: red;
-    font-size: 20px;
-}
-
 
 .button-group {
     display: flex;

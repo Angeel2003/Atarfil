@@ -23,25 +23,15 @@
         <ion-label class="zona-title">{{ zona.zona }}</ion-label>
       </ion-item>
       <div slot="content">
-        <ion-item lines="none" *ngFor="let subtarea of zona.subtareas; let i = index" (click)="cambiarEstado(subtarea)">
+        <ion-item lines="none" *ngFor="let subtarea of zona.subtareas" (click)="cambiarEstado(subtarea)">
           <ion-label>{{ subtarea.nombre }}</ion-label>
           <div class="checkbox-container">
             <ion-checkbox
-              indeterminate="true"
-              disabled="true"
+              [checked]="subtarea.estado === 'completado'"
+              [indeterminate]="subtarea.estado === 'en-pausa'"
               slot="end" 
               class="checkbox-{{ subtarea.estado }}">
             </ion-checkbox>
-            <ion-icon 
-              *ngIf="subtarea.estado === 'completado'" 
-              name="checkmark-circle" 
-              class="icono-check">
-            </ion-icon>
-            <ion-icon 
-              *ngIf="subtarea.estado === 'pendiente' || subtarea.estado === 'no-completado'" 
-              name="close-circle" 
-              class="icono-cruz">
-            </ion-icon>
           </div>
         </ion-item>
       </div>

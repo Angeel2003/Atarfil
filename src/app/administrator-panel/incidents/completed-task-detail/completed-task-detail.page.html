@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/select-zone"></ion-back-button>
+      <ion-back-button defaultHref="/incidents"></ion-back-button>
     </ion-buttons>
     <ion-title>
       <img src="assets/images/logo.png" alt="Logo" class="logo">
@@ -15,19 +15,19 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card *ngIf="tarea">
+  <ion-card *ngIf="task">
     <ion-card-header>
-      <ion-card-title>{{ tarea.tarea_a_asignar }}</ion-card-title>
+      <ion-card-title>{{ task.tarea_a_asignar }}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p><strong>Fecha:</strong> {{ tarea.fechaCompleta  | date: 'dd/MM/yyyy' }}</p>
-      <p><strong>Hora:</strong> {{ tarea.fechaCompleta  | date: 'HH:mm' }}</p>
+      <p><strong>Fecha:</strong> {{ task.fechaCompleta  | date: 'dd/MM/yyyy' }}</p>
+      <p><strong>Hora:</strong> {{ task.fechaCompleta  | date: 'HH:mm' }}</p>
     </ion-card-content>
   </ion-card>
 
-  <div class="button-group">
-    <ion-button class="notificar-button" shape="round" (click)="confirmNotification()">
-      Notificar tarea completada
+  <div class="button-group" *ngIf="task">
+    <ion-button class="borrar-button" shape="round" (click)="confirmDelete(task.id)">
+      Borrar tarea completada
     </ion-button>
   </div>
 </ion-content>

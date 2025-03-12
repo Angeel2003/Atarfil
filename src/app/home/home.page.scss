@@ -30,7 +30,8 @@ ion-title {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 75vh;
+  min-height: 75vh;
+  padding: 20px;
 }
 
 ion-item {

@@ -41,7 +41,8 @@ export const routes: Routes = [
   {
     path: 'add-user',
     loadComponent: () => import('./administrator-panel/user-management/add-user/add-user.page').then( m => m.AddUserPage)
-  },  {
+  },
+  {
     path: 'add-urgent-task',
     loadComponent: () => import('./administrator-panel/incidents/add-urgent-task/add-urgent-task.page').then( m => m.AddUrgentTaskPage)
   },
@@ -60,6 +61,10 @@ export const routes: Routes = [
   {
     path: 'periodic-task-detail',
     loadComponent: () => import('./operator-panel/periodic-task-detail/periodic-task-detail.page').then( m => m.PeriodicTaskDetailPage)
-  },
+  },  {
+    path: 'completed-task-detail',
+    loadComponent: () => import('./administrator-panel/incidents/completed-task-detail/completed-task-detail.page').then( m => m.CompletedTaskDetailPage)
+  }
+
 
 ];

@@ -38,34 +38,34 @@ export class UrgentTaskDetailPage implements OnInit {
     }
   }
 
-  async confirmDelete() {
+  async confirmNotification() {
     const alert = await this.alertController.create({
       header: 'Confirmar',
-      message: '¿Estás seguro de que quieres eliminar esta tarea?',
+      message: '¿Estás seguro de que quieres marcar esta tarea como completada?',
       buttons: [
         {
           text: 'Cancelar',
           role: 'cancel',
         },
         {
-          text: 'Eliminar',
+          text: 'Completar',
           handler: async () => {
             try {
-              await this.http.delete(`${this.apiUrl}/${this.tarea.id}`).toPromise();
+              await this.http.patch(`${this.apiUrl}/${this.tarea.id}/completar`, {}).toPromise();
               
               const successAlert = await this.alertController.create({
                 header: 'Éxito',
-                message: 'Tarea eliminada correctamente',
+                message: 'Tarea marcada como completada',
                 buttons: ['OK']
               });
               await successAlert.present();
-
+  
               this.router.navigate(['/operator-panel']);
             } catch (error) {
-              console.error('Error al eliminar la tarea:', error);
+              console.error('Error al marcar la tarea como completada:', error);
               const errorAlert = await this.alertController.create({
                 header: 'Error',
-                message: 'No se pudo eliminar la tarea. Inténtalo de nuevo.',
+                message: 'No se pudo marcar la tarea. Inténtalo de nuevo.',
                 buttons: ['OK']
               });
               await errorAlert.present();
@@ -74,7 +74,7 @@ export class UrgentTaskDetailPage implements OnInit {
         }
       ]
     });
-
+  
     await alert.present();
-  }
+  }  
 }
