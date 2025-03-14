@@ -29,26 +29,21 @@ export class PeriodicTaskDetailPage implements OnInit {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state && navigation.extras.state['tarea']) {
       this.tarea = navigation.extras.state['tarea'];
-
-      // Agregar la propiedad 'no-iniciada' a cada subtarea
+  
       this.tarea.zonas.forEach((zona: any) => {
-        zona.subtareas = zona.subtareas.map((subtarea: string) => ({
+        zona.subtareas = zona.subtareas.map((subtarea: any) => ({
           nombre: subtarea,
-          estado: 'no-iniciada'
+          estado: subtarea.estado || 'no-iniciada'
         }));
       });
     } else {
       console.error('No se recibió la tarea.');
       this.router.navigate(['/operator-panel']);
     }
-  }
+  }  
 
-  cambiarEstado(subtarea: any) {
-    // const estados = ['no-iniciada', 'en-pausa', 'completado'];
-    // const indiceActual = estados.indexOf(subtarea.estado);
-    // console.log(indiceActual)
-  
-    // subtarea.estado = estados[(indiceActual + 1) % estados.length];
+  verDetallesSubtarea(subtarea: any) {
+    this.router.navigate(['/subtask-detail'], { state: { subtarea, tarea: this.tarea } });
   }
   
 

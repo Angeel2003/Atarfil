@@ -15,15 +15,15 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  
   <!-- Lista de Zonas con Desplegables -->
-
   <ion-accordion-group>
     <ion-accordion *ngFor="let zona of tarea.zonas" [value]="zona.zona">
       <ion-item lines="none" slot="header">
         <ion-label class="zona-title">{{ zona.zona }}</ion-label>
       </ion-item>
       <div slot="content">
-        <ion-item lines="none" *ngFor="let subtarea of zona.subtareas" (click)="cambiarEstado(subtarea)">
+        <ion-item lines="none" *ngFor="let subtarea of zona.subtareas" (click)="verDetallesSubtarea(subtarea)">
           <ion-label>{{ subtarea.nombre }}</ion-label>
           <div class="checkbox-container">
             <ion-checkbox

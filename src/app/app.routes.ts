@@ -64,6 +64,10 @@ export const routes: Routes = [
   },  {
     path: 'completed-task-detail',
     loadComponent: () => import('./administrator-panel/incidents/completed-task-detail/completed-task-detail.page').then( m => m.CompletedTaskDetailPage)
+  },
+  {
+    path: 'subtask-detail',
+    loadComponent: () => import('./operator-panel/periodic-task-detail/subtask-detail/subtask-detail.page').then( m => m.SubtaskDetailPage)
   }
 
 

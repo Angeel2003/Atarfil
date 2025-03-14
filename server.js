@@ -357,7 +357,7 @@ app.patch('/tareas-urgentes/:id/completar', async (req, res) => {
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('41 11 * * *', async () => {
+cron.schedule('07 18 * * *', async () => {
     try {
         console.log('Ejecutando tarea programada: Insertar tareas periódicas...');
         
