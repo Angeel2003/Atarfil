@@ -306,7 +306,7 @@ app.get('/tareas-a-realizar', async (req, res) => {
   }
 });
 
-// Obtener tareas urgentes asignadas a un operador para la fecha actual y con estado "pendiente"
+// Obtener tareas urgentes asignadas a un operador para la fecha actual y fechas anteriores con estado "pendiente"
 app.get('/tareas-urgentes/:usuarioId', async (req, res) => {
   try {
     const { usuarioId } = req.params;
@@ -317,9 +317,9 @@ app.get('/tareas-urgentes/:usuarioId', async (req, res) => {
     const result = await pool.query(
       `SELECT * FROM tareas_urgentes 
        WHERE usuario_asignado @> $1 
-       AND fecha = $2 
+       AND fecha <= $2
        AND estado = 'pendiente' 
-       ORDER BY fecha, hora`,
+       ORDER BY fecha DESC, hora DESC`,
       [`[${usuarioId}]`, today]
     );
 
@@ -354,10 +354,36 @@ app.patch('/tareas-urgentes/:id/completar', async (req, res) => {
   }
 });
 
+// Crear una nueva incidencia
+app.post('/incidencias', async (req, res) => {
+  try {
+    const { area, zona, subzona, tipo_actuacion, material_necesario, hora_inicio, hora_fin, otros } = req.body;
+
+    if (!tipo_actuacion) {
+      return res.status(400).json({ error: 'El campo "tipo_actuacion" es obligatorio para registrar una incidencia' });
+    }
+
+    const query = `
+      INSERT INTO incidencias (area, zona, subzona, tipo_actuacion, material_necesario, hora_inicio, hora_fin, otros)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING *;
+    `;
+
+    const values = [area, zona, subzona, tipo_actuacion, material_necesario, hora_inicio, hora_fin, otros];
+
+    const result = await pool.query(query, values);
+
+    res.status(201).json({ message: 'Incidencia creada correctamente', incidencia: result.rows[0] });
+  } catch (error) {
+    console.error('Error al crear la incidencia:', error);
+    res.status(500).json({ error: 'No se pudo crear la incidencia' });
+  }
+});
+
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('07 18 * * *', async () => {
+cron.schedule('23 18 * * *', async () => {
     try {
         console.log('Ejecutando tarea programada: Insertar tareas periódicas...');
         

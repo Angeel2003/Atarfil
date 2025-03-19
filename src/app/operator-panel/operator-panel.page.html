@@ -15,17 +15,17 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!-- Sección de Tareas Urgentes -->
+  <!-- Sección de Tareas Extraordinarias -->
   <div class="tareas" *ngIf="tareas_urgentes.length > 0">
     <ion-list-header class="section-title">
-      <ion-label><strong>Tareas Urgentes</strong></ion-label>
+      <ion-label><strong>Tareas Extraordinarias</strong></ion-label>
     </ion-list-header>
 
     <div class="task-container">
       <ion-card *ngFor="let tarea of tareas_urgentes" class="task-card" (click)="verTareaUrgente(tarea)">
         <ion-card-content>
           <h2>{{ tarea.tarea_a_asignar }}</h2>
-          <p><strong>Fecha: </strong>{{ tarea.fechaCompleta | date: 'd\'/\'MMMM\'/\'yyyy\'' }} &nbsp; <strong>Hora: </strong>{{ tarea.fechaCompleta | date: 'HH:mm' }}</p>
+          <p><strong>Fecha: </strong>{{ tarea.fechaCompleta | date: 'd\'/\'MM\'/\'yyyy\'' }} &nbsp; <strong>Hora: </strong>{{ tarea.fechaCompleta | date: 'HH:mm' }}</p>
         </ion-card-content>
       </ion-card>
     </div>

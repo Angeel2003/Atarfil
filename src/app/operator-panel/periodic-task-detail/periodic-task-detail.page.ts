@@ -42,8 +42,8 @@ export class PeriodicTaskDetailPage implements OnInit {
     }
   }  
 
-  verDetallesSubtarea(subtarea: any) {
-    this.router.navigate(['/subtask-detail'], { state: { subtarea, tarea: this.tarea } });
+  verDetallesSubtarea(subtarea: any, zona: any) {
+    this.router.navigate(['/subtask-detail'], { state: { subtarea, tarea: this.tarea, zona } });
   }
   
 

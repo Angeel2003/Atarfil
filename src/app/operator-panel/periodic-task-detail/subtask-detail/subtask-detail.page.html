@@ -20,40 +20,40 @@
     <!-- Tipo de actuación -->
     <ion-item>
       <ion-label position="floating">Tipo de actuación</ion-label>
-      <ion-input name="tipo_actuacion" [(ngModel)]="incidencia.tipo_actuacion"></ion-input>
+      <ion-input name="tipo_actuacion" [(ngModel)]="incidencia.tipo_actuacion" [readonly]="!esEditable"></ion-input>
     </ion-item>
 
     <!-- Material necesario -->
     <ion-item>
       <ion-label position="floating">Material necesario</ion-label>
-      <ion-input name="material_necesario" [(ngModel)]="incidencia.material_necesario"></ion-input>
+      <ion-input name="material_necesario" [(ngModel)]="incidencia.material_necesario" [readonly]="!esEditable"></ion-input>
     </ion-item>
 
     <!-- Hora de inicio / Hora de fin -->
     <div class="time-container">
       <ion-item>
         <ion-label position="stacked">Hora de inicio</ion-label>
-        <ion-input name="hora_inicio" [(ngModel)]="horaInicio" readonly></ion-input>
+        <ion-input name="hora_inicio" [(ngModel)]="incidencia.hora_inicio" readonly></ion-input>
       </ion-item>
   
       <ion-item>
         <ion-label position="stacked">Hora de fin</ion-label>
-        <ion-input name="hora_fin" [(ngModel)]="horaFin" readonly></ion-input>
+        <ion-input name="hora_fin" [(ngModel)]="incidencia.hora_fin" readonly></ion-input>
       </ion-item>
     </div>
 
     <!-- Otros -->
     <ion-item>
       <ion-label position="floating">Otros</ion-label>
-      <ion-textarea name="otros" [(ngModel)]="incidencia.otros"></ion-textarea>
+      <ion-textarea name="otros" [(ngModel)]="incidencia.otros" [readonly]="!esEditable"></ion-textarea>
     </ion-item>
 
     <!-- Botón Confirmar -->
     <div class="button-container">
-      <ion-button class="task-button" expand="block" shape="round" (click)="marcarComoCompletado()">
+      <ion-button class="task-button" expand="block" shape="round" (click)="marcarComoCompletado()" *ngIf="esEditable">
         Tarea revisada
       </ion-button>
-      <ion-button class="pause-button" expand="block" shape="round" (click)="marcarComoEnPausa()">
+      <ion-button class="pause-button" expand="block" shape="round" (click)="marcarComoEnPausa()" *ngIf="esEditable">
         Pausa
       </ion-button>
     </div>

@@ -52,8 +52,8 @@ ion-input {
     .task-button {
         width: 300px;
         height: 50px;
-        --background: #243270;
-        --color: #fff;
+        --background: rgb(0, 175, 0);
+        --color: #000;
         margin-bottom: 30px;
         margin: 20px auto;
     }
@@ -61,7 +61,7 @@ ion-input {
     .pause-button {
         width: 300px;
         height: 50px;
-        --background: #a3a3a3;
+        --background: rgb(235, 235, 0);
         --color: #000;
         margin-bottom: 30px;
         margin: 20px auto;

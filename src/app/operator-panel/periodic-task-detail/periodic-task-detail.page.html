@@ -23,12 +23,13 @@
         <ion-label class="zona-title">{{ zona.zona }}</ion-label>
       </ion-item>
       <div slot="content">
-        <ion-item lines="none" *ngFor="let subtarea of zona.subtareas" (click)="verDetallesSubtarea(subtarea)">
+        <ion-item lines="none" *ngFor="let subtarea of zona.subtareas" (click)="verDetallesSubtarea(subtarea, zona.zona)">
           <ion-label>{{ subtarea.nombre }}</ion-label>
           <div class="checkbox-container">
             <ion-checkbox
               [checked]="subtarea.estado === 'completado'"
               [indeterminate]="subtarea.estado === 'en-pausa'"
+              disabled="true"
               slot="end" 
               class="checkbox-{{ subtarea.estado }}">
             </ion-checkbox>
