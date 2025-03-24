@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
 })
 export class PeriodicTaskDetailPage implements OnInit {
   tarea: any;
-  private apiUrl = environment.apiUrl + 'tareas-a-realizar';
+  private apiUrl = environment.apiUrl + '/tareas-a-realizar';
 
   constructor(private router: Router, private http: HttpClient, private alertController: AlertController) {
     addIcons({
@@ -47,29 +47,43 @@ export class PeriodicTaskDetailPage implements OnInit {
     this.router.navigate(['/subtask-detail'], { state: { subtarea, tarea: this.tarea, zona } });
   }
   
-
   async completarTarea() {
-    const alert = await this.alertController.create({
+    const haySubtareasNoIniciadas = this.tarea.zonas.some((zona: any) =>
+      zona.subtareas.some((sub: any) => sub.estado === 'no-iniciada')
+    );
+  
+    if (haySubtareasNoIniciadas) {
+      const alerta = await this.alertController.create({
+        header: 'Tarea incompleta',
+        message: 'No puedes terminar la tarea hasta que todas las subtareas estén revisadas o pausadas.',
+        buttons: ['Entendido']
+      });
+      await alerta.present();
+      return;
+    }
+  
+    // Confirmación final
+    const confirmacion = await this.alertController.create({
       header: 'Confirmar',
       message: '¿Has completado todas las subtareas?',
       buttons: [
         {
           text: 'Cancelar',
-          role: 'cancel',
+          role: 'cancel'
         },
         {
           text: 'Completar',
           handler: async () => {
             try {
-              await this.http.delete(`${this.apiUrl}/${this.tarea.id}`).toPromise();
-              
-              const successAlert = await this.alertController.create({
+              await this.http.request('DELETE', `${this.apiUrl}/${this.tarea.tarea_realizar_id}`, { body: { tarea: this.tarea } }).toPromise();
+
+              const exito = await this.alertController.create({
                 header: 'Éxito',
-                message: 'Tarea completada correctamente',
+                message: 'Tarea completada correctamente.',
                 buttons: ['OK']
               });
-              await successAlert.present();
-
+              await exito.present();
+  
               this.router.navigate(['/operator-panel']);
             } catch (error) {
               console.error('Error al completar la tarea:', error);
@@ -84,7 +98,7 @@ export class PeriodicTaskDetailPage implements OnInit {
         }
       ]
     });
-
-    await alert.present();
-  }
+  
+    await confirmacion.present();
+  }  
 }

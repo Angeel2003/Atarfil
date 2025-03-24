@@ -42,7 +42,10 @@
         <ion-card-content>
           <h2>{{ tarea.area }}</h2>
           <div class="task-header">
-            <p>Inspección {{ tarea.inspeccion }}</p>
+            <p *ngIf="tarea.inspeccion; else sinInspeccion">Inspección {{ tarea.inspeccion }}</p>
+            <ng-template #sinInspeccion>
+              <p>Sin tipo de inspección</p>
+            </ng-template>
             <span class="task-tag">{{ tarea.periodicidad }}</span>
           </div>
         </ion-card-content>

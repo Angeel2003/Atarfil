@@ -292,7 +292,7 @@ app.get('/tareas-a-realizar', async (req, res) => {
     const fechaHoy = new Date().toISOString().split('T')[0]; // Obtiene la fecha actual
 
     const result = await pool.query(`
-      SELECT tp.*, ta.fecha 
+      SELECT ta.id AS tarea_realizar_id, tp.*, ta.fecha  
       FROM tareas_a_realizar ta
       JOIN tareas_periodicas tp ON ta.tarea_periodica_id = tp.id
       WHERE ta.fecha = $1
@@ -380,42 +380,118 @@ app.post('/incidencias', async (req, res) => {
   }
 });
 
+app.delete('/tareas-a-realizar/:id', async (req, res) => {
+  const { id } = req.params;
+  const { tarea } = req.body;
+
+  if (!tarea || !Array.isArray(tarea.zonas)) {
+    return res.status(400).json({ error: 'Tarea inválida o sin zonas' });
+  }
+
+  try {
+    let tieneEnPausa = false;
+    let todasCompletadas = true;
+
+    tarea.zonas.forEach(zona => {
+      const subtareas = zona.subtareas || [];
+      subtareas.forEach(sub => {
+        if (sub.estado === 'en-pausa') tieneEnPausa = true;
+        if (sub.estado !== 'completado') todasCompletadas = false;
+      });
+    });
+
+    if (todasCompletadas) {
+      await pool.query('INSERT INTO tareas_completadas (tarea) VALUES ($1)', [tarea]);
+    } else if (tieneEnPausa) {
+      await pool.query('INSERT INTO tareas_no_terminadas (tarea) VALUES ($1)', [tarea]);
+    } else {
+      return res.status(400).json({ error: 'La tarea no puede marcarse como completada ni en pausa' });
+    }
+
+    await pool.query('DELETE FROM tareas_a_realizar WHERE id = $1', [id]);
+
+    res.json({ message: 'Tarea procesada correctamente' });
+
+  } catch (error) {
+    console.error('Error al completar la tarea:', error);
+    res.status(500).json({ error: 'Error al procesar la tarea' });
+  }
+});
+
+// Obtener todas las tareas completadas
+app.get('/tareas-completadas', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM tareas_completadas ORDER BY fecha DESC');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener tareas completadas:', error);
+    res.status(500).json({ error: 'Error al obtener tareas completadas' });
+  }
+});
+
+// Obtener todas las tareas no terminadas (pausadas)
+app.get('/tareas-no-terminadas', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM tareas_no_terminadas ORDER BY fecha DESC');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener tareas no terminadas:', error);
+    res.status(500).json({ error: 'Error al obtener tareas no terminadas' });
+  }
+});
+
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('23 18 * * *', async () => {
-    try {
-        console.log('Ejecutando tarea programada: Insertar tareas periódicas...');
-        
-        const fechaHoy = new Date().toISOString().split('T')[0];
+cron.schedule('00 00 * * *', async () => {
+  try {
+    console.log('Ejecutando tarea programada...');
 
-        const result = await pool.query(`
-            SELECT id FROM tareas_periodicas
-            WHERE periodicidad = 'Diaria'
-            OR (periodicidad = 'Semanal' AND EXTRACT(DOW FROM NOW()) = 1) -- Lunes
-            OR (periodicidad = 'Mensual' AND EXTRACT(DAY FROM NOW()) = 1) -- Día 1 del mes
-            OR (periodicidad = 'Semestral' AND EXTRACT(MONTH FROM NOW()) IN (1, 7) AND EXTRACT(DAY FROM NOW()) = 1) -- Enero y Julio
-            OR (periodicidad = 'Anual' AND EXTRACT(MONTH FROM NOW()) = 1 AND EXTRACT(DAY FROM NOW()) = 1) -- 1 de Enero
-        `);
+    // Paso 1: Eliminar tareas_completadas y tareas_no_terminadas (limpieza de histórico diario)
+    await pool.query('DELETE FROM tareas_completadas');
+    await pool.query('DELETE FROM tareas_no_terminadas');
 
-        for (const tarea of result.rows) {
-            const checkExist = await pool.query(
-                'SELECT * FROM tareas_a_realizar WHERE tarea_periodica_id = $1 AND fecha = $2',
-                [tarea.id, fechaHoy]
-            );
+    // Paso 2: Obtener fecha de hoy
+    const fechaHoy = new Date().toISOString().split('T')[0];
 
-            if (checkExist.rowCount === 0) {
-                await pool.query(
-                    'INSERT INTO tareas_a_realizar (tarea_periodica_id, fecha) VALUES ($1, $2)',
-                    [tarea.id, fechaHoy]
-                );
-            }
-        }
+    // Paso 3: Eliminar tareas diarias del día anterior
+    await pool.query(`
+      DELETE FROM tareas_a_realizar
+      WHERE tarea_periodica_id IN (
+        SELECT id FROM tareas_periodicas WHERE periodicidad = 'Diaria'
+      )
+      AND fecha <> $1
+    `, [fechaHoy]);
 
-        console.log('Tareas periódicas insertadas correctamente.');
-    } catch (error) {
-        console.error('Error al insertar tareas periódicas:', error);
+    // Paso 4: Obtener las tareas periódicas que se deben realizar hoy
+    const tareasHoy = await pool.query(`
+      SELECT id FROM tareas_periodicas
+      WHERE periodicidad = 'Diaria'
+        OR (periodicidad = 'Semanal' AND EXTRACT(DOW FROM NOW()) = 1) -- Lunes
+        OR (periodicidad = 'Mensual' AND EXTRACT(DAY FROM NOW()) = 1) -- Día 1 del mes
+        OR (periodicidad = 'Semestral' AND EXTRACT(MONTH FROM NOW()) IN (1, 7) AND EXTRACT(DAY FROM NOW()) = 1) -- Ene/Jul
+        OR (periodicidad = 'Anual' AND EXTRACT(MONTH FROM NOW()) = 1 AND EXTRACT(DAY FROM NOW()) = 1) -- 1 Ene
+    `);
+
+    // Paso 5: Insertar solo las tareas que aún no estén registradas para hoy
+    for (const tarea of tareasHoy.rows) {
+      const check = await pool.query(
+        'SELECT 1 FROM tareas_a_realizar WHERE tarea_periodica_id = $1 AND fecha = $2',
+        [tarea.id, fechaHoy]
+      );
+
+      if (check.rowCount === 0) {
+        await pool.query(
+          'INSERT INTO tareas_a_realizar (tarea_periodica_id, fecha) VALUES ($1, $2)',
+          [tarea.id, fechaHoy]
+        );
+      }
     }
+
+    console.log('Tareas periódicas procesadas correctamente.');
+  } catch (error) {
+    console.error('Error en la tarea programada:', error);
+  }
 });
 
 // Iniciar el servidor en el puerto 3000

@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
 })
 export class UrgentTaskDetailPage implements OnInit {
   tarea: any;
-  private apiUrl = environment.apiUrl + 'tareas-urgentes';
+  private apiUrl = environment.apiUrl + '/tareas-urgentes';
 
   constructor(private router: Router, private http: HttpClient, private alertController: AlertController) {}
 

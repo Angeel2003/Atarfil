@@ -9,8 +9,8 @@ import { environment } from 'src/environments/environment';
 })
 export class LoginService {
   // URL de tu endpoint de login en el backend
-  private loginUrl = environment.apiUrl + 'api/login';
-  private updatePasswordUrl = environment.apiUrl + 'api/update-password';
+  private loginUrl = environment.apiUrl + '/api/login';
+  private updatePasswordUrl = environment.apiUrl + '/api/update-password';
 
   constructor(private http: HttpClient) { }
 

@@ -16,7 +16,7 @@ import { environment } from 'src/environments/environment';
 export class IncidentDetailPage implements OnInit {
   incidents: any[] = [];
   incident: any;
-  private apiUrl = environment.apiUrl + 'incidencias';
+  private apiUrl = environment.apiUrl + '/incidencias';
 
   constructor(private router: Router, private http: HttpClient, private alertController: AlertController) { }
 
