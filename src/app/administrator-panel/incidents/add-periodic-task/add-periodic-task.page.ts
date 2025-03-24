@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonBackButton, IonButton, IonButtons, IonIcon, AlertController, IonItem, IonLabel, IonSelectOption, IonInput, IonSelect } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 import { addIcons } from 'ionicons';
 import { trash, closeCircle } from 'ionicons/icons';
@@ -30,7 +31,7 @@ export class AddPeriodicTaskPage implements OnInit {
     subtareas: []
   };
 
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = environment.apiUrl;
 
   constructor(private router: Router, private http: HttpClient, private alertController: AlertController) {
     addIcons({

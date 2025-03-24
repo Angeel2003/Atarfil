@@ -5,6 +5,7 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonBackButton, IonButton, 
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ViewWillEnter } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 
 import { trash } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
@@ -18,7 +19,7 @@ import { addIcons } from 'ionicons';
 })
 export class UserManagementPage implements ViewWillEnter {
   users: any[] = [];
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = environment.apiUrl;
 
   constructor(private router: Router, private http: HttpClient, private alertController: AlertController) {
     addIcons({

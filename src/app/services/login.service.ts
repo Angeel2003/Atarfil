@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
   // URL de tu endpoint de login en el backend
-  private loginUrl = 'http://localhost:3000/api/login';
-  private updatePasswordUrl = 'http://localhost:3000/api/update-password';
+  private loginUrl = environment.apiUrl + 'api/login';
+  private updatePasswordUrl = environment.apiUrl + 'api/update-password';
 
   constructor(private http: HttpClient) { }
 

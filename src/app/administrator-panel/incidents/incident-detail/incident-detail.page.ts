@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, AlertController, IonButton, IonButtons, IonBackButton, IonIcon, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-incident-detail',
@@ -15,7 +16,7 @@ import { HttpClient } from '@angular/common/http';
 export class IncidentDetailPage implements OnInit {
   incidents: any[] = [];
   incident: any;
-  private apiUrl = 'http://localhost:3000/incidencias';
+  private apiUrl = environment.apiUrl + 'incidencias';
 
   constructor(private router: Router, private http: HttpClient, private alertController: AlertController) { }
 

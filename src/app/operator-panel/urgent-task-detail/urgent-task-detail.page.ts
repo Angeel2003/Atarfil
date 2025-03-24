@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AlertController, IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonBackButton, IonIcon, IonCard, IonCardHeader, IonCardContent, IonCardTitle } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-urgent-task-detail',
@@ -14,7 +15,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UrgentTaskDetailPage implements OnInit {
   tarea: any;
-  private apiUrl = 'http://localhost:3000/tareas-urgentes';
+  private apiUrl = environment.apiUrl + 'tareas-urgentes';
 
   constructor(private router: Router, private http: HttpClient, private alertController: AlertController) {}
 

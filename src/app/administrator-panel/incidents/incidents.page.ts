@@ -5,6 +5,7 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, Ion
 import { HttpClient } from '@angular/common/http';
 import { NavigationExtras, Router } from '@angular/router';
 import { ViewWillEnter } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-incidents',
@@ -16,7 +17,7 @@ import { ViewWillEnter } from '@ionic/angular';
 export class IncidentsPage implements ViewWillEnter {
   incidents: any[] = [];
   completedTasks: any[] = [];
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = environment.apiUrl;
 
   constructor(private router: Router, private http: HttpClient) { }
 

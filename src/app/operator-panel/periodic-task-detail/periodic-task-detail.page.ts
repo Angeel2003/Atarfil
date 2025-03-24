@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle, closeCircle } from 'ionicons/icons';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-periodic-task-detail',
@@ -16,7 +17,7 @@ import { checkmarkCircle, closeCircle } from 'ionicons/icons';
 })
 export class PeriodicTaskDetailPage implements OnInit {
   tarea: any;
-  private apiUrl = 'http://localhost:3000/tareas-a-realizar';
+  private apiUrl = environment.apiUrl + 'tareas-a-realizar';
 
   constructor(private router: Router, private http: HttpClient, private alertController: AlertController) {
     addIcons({

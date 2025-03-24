@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { AlertController, NavController, IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonBackButton, IonButtons, IonIcon, IonItem, IonLabel, IonInput, IonTextarea } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-subtask-detail',
@@ -27,7 +28,7 @@ export class SubtaskDetailPage implements OnInit {
   horaFin: string = '';
   esEditable: boolean = true;
 
-  private apiUrl = 'http://localhost:3000'
+  private apiUrl = environment.apiUrl;
 
   constructor(private navCtrl: NavController, private http: HttpClient, private router: Router, private alertCtrl: AlertController) {
     const nav = this.router.getCurrentNavigation();
