@@ -286,18 +286,15 @@ app.post('/tareas-periodicas', async (req, res) => {
   }
 });
 
-// Obtener todas las tareas periódicas programadas para el día actual
+// Obtener todas las tareas periódicas a realizar
 app.get('/tareas-a-realizar', async (req, res) => {
   try {
-    const fechaHoy = new Date().toISOString().split('T')[0]; // Obtiene la fecha actual
-
     const result = await pool.query(`
       SELECT ta.id AS tarea_realizar_id, tp.*, ta.fecha  
       FROM tareas_a_realizar ta
       JOIN tareas_periodicas tp ON ta.tarea_periodica_id = tp.id
-      WHERE ta.fecha = $1
       ORDER BY ta.fecha;
-    `, [fechaHoy]);
+    `);
 
     res.json(result.rows);
   } catch (error) {
