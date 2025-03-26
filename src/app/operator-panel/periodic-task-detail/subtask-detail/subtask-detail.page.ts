@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AlertController, NavController, IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonBackButton, IonButtons, IonIcon, IonItem, IonLabel, IonInput, IonTextarea } from '@ionic/angular/standalone';
+import { AlertController, NavController, IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonBackButton, IonButtons, IonIcon, IonItem, IonLabel, IonInput, IonTextarea, IonSearchbar, IonModal, IonList, IonCheckbox } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
   templateUrl: './subtask-detail.page.html',
   styleUrls: ['./subtask-detail.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButton, IonBackButton, IonButtons, IonIcon, IonItem, IonLabel, IonInput, IonTextarea]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButton, IonBackButton, IonButtons, IonIcon, IonItem, IonLabel, IonInput, IonTextarea, IonSearchbar, IonModal, IonList, IonCheckbox]
 })
 export class SubtaskDetailPage implements OnInit {
   subtarea: any = {};
@@ -19,14 +19,19 @@ export class SubtaskDetailPage implements OnInit {
   zona: any;
   incidencia: any = {
     tipo_actuacion: '',
-    material_necesario: '',
-    hora_inicio: '',
+    material_necesario: [] as string[],
+    hora_inicio: [] as string[],
     hora_fin: '',
     otros: ''
   };
+
   horaInicio: string = '';
   horaFin: string = '';
   esEditable: boolean = true;
+  
+  materiales: any[] = [];
+  filtroMaterial: string = '';
+  modalAbierto: boolean = false;
 
   private apiUrl = environment.apiUrl;
 
@@ -41,17 +46,28 @@ export class SubtaskDetailPage implements OnInit {
         this.incidencia = { ...this.subtarea.incidencia };
       }
 
-      if (this.subtarea.estado === 'completado' || this.subtarea.estado === 'en-pausa') {
+      if (this.subtarea.estado === 'completado') {
         this.esEditable = false;
       }
     }
   }
 
   ngOnInit() {
-    if (!this.incidencia.hora_inicio) {
-      this.horaInicio = this.getFormattedTime();
-      this.incidencia.hora_inicio = this.horaInicio;
+    const horaActual = this.getFormattedTime();
+  
+    if (!Array.isArray(this.incidencia.hora_inicio)) {
+      this.incidencia.hora_inicio = [horaActual];
+    } else {
+      this.incidencia.hora_inicio.push(horaActual);
     }
+  
+    this.horaInicio = this.incidencia.hora_inicio[0];
+
+    // Cargar materiales desde la API
+    this.http.get<any[]>(`${this.apiUrl}/materiales`).subscribe({
+      next: (data) => this.materiales = data,
+      error: (err) => console.error('Error al cargar materiales:', err)
+    });
   }
 
   // Función para obtener la hora en formato HH:MM:SS
@@ -60,7 +76,49 @@ export class SubtaskDetailPage implements OnInit {
     return now.toTimeString().split(' ')[0];
   }
 
+  materialesFiltrados() {
+    const filtro = this.filtroMaterial.toLowerCase();
+    return this.materiales.filter(mat =>
+      mat.nombre.toLowerCase().includes(filtro)
+    );
+  }
+
+  abrirModalMateriales() {
+    this.modalAbierto = true;
+  }
+
+  cerrarModal() {
+    this.modalAbierto = false;
+  }
+
+  estaSeleccionado(nombre: string): boolean {
+    return this.incidencia.material_necesario.includes(nombre);
+  }
+
+  toggleMaterial(nombre: string) {
+    const index = this.incidencia.material_necesario.indexOf(nombre);
+    if (index > -1) {
+      this.incidencia.material_necesario.splice(index, 1);
+    } else {
+      this.incidencia.material_necesario.push(nombre);
+    }
+  }
+
+  confirmarSeleccion() {
+    this.cerrarModal();
+  }
+
   async marcarComoCompletado() {
+    if (!this.incidencia.tipo_actuacion.trim()) {
+      const alert = await this.alertCtrl.create({
+        header: 'Aviso',
+        message: 'Debes ingresar un "Tipo de Actuación" para registrar la tarea.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
     this.horaFin = this.getFormattedTime();
     this.subtarea.estado = 'completado';
     this.incidencia.hora_fin = this.horaFin;
@@ -75,7 +133,7 @@ export class SubtaskDetailPage implements OnInit {
     if (!this.incidencia.tipo_actuacion.trim()) {
       const alert = await this.alertCtrl.create({
         header: 'Aviso',
-        message: 'Debes ingresar un "Tipo de Actuación" para registrar la incidencia.',
+        message: 'Debes ingresar un "Tipo de Actuación" para registrar la tarea.',
         buttons: ['OK']
       });
       await alert.present();
@@ -85,27 +143,29 @@ export class SubtaskDetailPage implements OnInit {
     this.subtarea.estado = 'en-pausa';
 
     this.subtarea.incidencia = { ...this.incidencia };
-    this.esEditable = false;
 
     try {
-      await this.http.post(`${this.apiUrl}/incidencias`, {
-        area: this.tarea.area,
-        zona: this.zona,
-        subzona: this.subtarea.nombre,
-        tipo_actuacion: this.incidencia.tipo_actuacion,
-        material_necesario: this.incidencia.material_necesario || null,
-        hora_inicio: this.incidencia.hora_inicio,
-        hora_fin: this.getFormattedTime(),
-        otros: this.incidencia.otros || null
-      }).toPromise();
-  
-      const successAlert = await this.alertCtrl.create({
-        header: 'Éxito',
-        message: 'Incidencia creada correctamente.',
-        buttons: ['OK']
-      });
-      await successAlert.present();
-  
+      const config: any = await this.http.get(`${this.apiUrl}/config/incidencia-en-pausa`).toPromise();
+
+      if (config.habilitado) {
+        await this.http.post(`${this.apiUrl}/incidencias`, {
+          area: this.tarea.area,
+          zona: this.zona,
+          subzona: this.subtarea.nombre,
+          tipo_actuacion: this.incidencia.tipo_actuacion,
+          material_necesario: this.incidencia.material_necesario || null,
+          hora_inicio: this.incidencia.hora_inicio[0],
+          hora_fin: this.getFormattedTime(),
+          otros: this.incidencia.otros || null
+        }).toPromise();
+    
+        const successAlert = await this.alertCtrl.create({
+          header: 'Éxito',
+          message: 'Incidencia creada correctamente.',
+          buttons: ['OK']
+        });
+        await successAlert.present();
+      }
     } catch (error) {
       console.error('Error al registrar la incidencia:', error);
       const errorAlert = await this.alertCtrl.create({

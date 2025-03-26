@@ -32,7 +32,7 @@ ion-title {
 
 .admin-info {
     margin-top: 20px;
-    margin-bottom: 60px;
+    margin-bottom: 20px;
 
     h2 {
         margin: 0;
@@ -45,6 +45,27 @@ ion-title {
         font-size: 16px;
         color: gray;
     }
+}
+
+ion-item {
+    // display: flex;
+    align-items: center;
+    justify-content: space-between;
+    --background: #f8f9fa;
+    border-radius: 12px;
+    padding: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+ion-label {
+    margin-right: 4px;
+    font-weight: bold;
+}
+
+ion-toggle {
+        --track-background-checked: #243270;
+    --handle-background-checked: #d6ddfd;
 }
 
 .button-group {

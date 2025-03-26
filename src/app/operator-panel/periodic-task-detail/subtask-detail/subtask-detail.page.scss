@@ -46,6 +46,13 @@ ion-input {
     --padding-start: 8px;
 }
 
+.material-button {
+    width: 40%;
+    height: 40px;
+    --background: #243270;
+    --color: #fff;
+}
+
 .button-container {
     display: flex;
 
@@ -66,4 +73,59 @@ ion-input {
         margin-bottom: 30px;
         margin: 20px auto;
     }
+}
+
+ion-modal::part(content) {
+    max-width: 650px;
+    margin: auto;
+}
+
+ion-modal {
+    --height: 90%;
+    --border-radius: 20px;
+    --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+ion-toolbar {
+    --background: #f4f4f4;
+    --color: #243270;
+    border-bottom: 1px solid #ccc;
+}
+
+.modal-title {
+    margin-left: 10%;
+    font-weight: bold;
+}
+
+ion-searchbar {
+    margin: 10px auto;
+    --background: #fff;
+    --box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+.modal-list {
+    padding: 0;
+}
+
+.modal-item {
+    --min-height: 48px;
+    --padding-top: 2px;
+    --padding-bottom: 2px;
+    --padding-start: 8px;
+    --inner-padding-end: 8px;
+    margin: 10px;
+}
+
+.modal-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.confirm-selection-button {
+    width: 300px;
+    height: 50px;
+    --background: #243270;
+    --color: #fff;
+    margin: 20px auto;
 }

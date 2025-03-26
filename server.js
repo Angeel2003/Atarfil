@@ -437,10 +437,53 @@ app.get('/tareas-no-terminadas', async (req, res) => {
   }
 });
 
+// Obtener el estado de la configuracion de las incidencias
+app.get('/config/incidencia-en-pausa', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT valor FROM configuracion WHERE clave = 'crear_incidencia_en_pausa'`
+    );
+
+    res.json({ habilitado: result.rows[0]?.valor === 'true' });
+  } catch (error) {
+    console.error('Error al obtener configuración:', error);
+    res.status(500).json({ error: 'No se pudo obtener la configuración' });
+  }
+});
+
+// Actualizar el estado de la configuracion de las incidencias
+app.patch('/config/incidencia-en-pausa', async (req, res) => {
+  const { habilitado } = req.body;
+
+  try {
+    await pool.query(
+      `UPDATE configuracion SET valor = $1 WHERE clave = 'crear_incidencia_en_pausa'`,
+      [habilitado ? 'true' : 'false']
+    );
+
+    res.json({ message: 'Configuración actualizada' });
+  } catch (error) {
+    console.error('Error al actualizar configuración:', error);
+    res.status(500).json({ error: 'No se pudo actualizar la configuración' });
+  }
+});
+
+// Obtener los materiales disponibles
+app.get('/materiales', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM material ORDER BY nombre');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener materiales:', error);
+    res.status(500).json({ error: 'No se pudo obtener la lista de materiales' });
+  }
+});
+
+
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('00 00 * * *', async () => {
+cron.schedule('52 18 * * *', async () => {
   try {
     console.log('Ejecutando tarea programada...');
 

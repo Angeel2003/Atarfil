@@ -24,16 +24,18 @@
     </ion-item>
 
     <!-- Material necesario -->
-    <ion-item>
-      <ion-label position="floating">Material necesario</ion-label>
-      <ion-input name="material_necesario" [(ngModel)]="incidencia.material_necesario" [readonly]="!esEditable"></ion-input>
+    <ion-item *ngIf="esEditable">
+      <ion-label>Material necesario</ion-label>
+      <ion-button class="material-button" expand="block" (click)="abrirModalMateriales()">
+        Seleccionar
+      </ion-button>
     </ion-item>
 
     <!-- Hora de inicio / Hora de fin -->
     <div class="time-container">
       <ion-item>
         <ion-label position="stacked">Hora de inicio</ion-label>
-        <ion-input name="hora_inicio" [(ngModel)]="incidencia.hora_inicio" readonly></ion-input>
+        <ion-input name="hora_inicio" [(ngModel)]="incidencia.hora_inicio[0]" readonly></ion-input>
       </ion-item>
   
       <ion-item>
@@ -58,4 +60,39 @@
       </ion-button>
     </div>
   </form>
+
+  <!-- MODAL -->
+  <ion-modal [isOpen]="modalAbierto" (didDismiss)="cerrarModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title class="modal-title">Seleccionar materiales</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <ion-searchbar [(ngModel)]="filtroMaterial" placeholder="Buscar..."></ion-searchbar>
+
+        <ion-list class="modal-list">
+          <ion-item class="modal-item" lines="none" *ngFor="let mat of materialesFiltrados()">
+            <ion-checkbox
+              slot="start"
+              [checked]="estaSeleccionado(mat.nombre)"
+              (ionChange)="toggleMaterial(mat.nombre)">
+            </ion-checkbox>
+            <ion-label class="modal-label">
+              {{ mat.nombre }} <small *ngIf="mat.codigo">({{ mat.codigo }})</small>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <ion-button class="confirm-selection-button" expand="block" (click)="confirmarSeleccion()">
+          Confirmar Selección
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

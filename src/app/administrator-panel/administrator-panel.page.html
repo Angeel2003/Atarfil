@@ -22,6 +22,11 @@
       <h2>{{ usuario.nombre_completo }}</h2>
       <p>{{ usuario.correo_electronico }}</p>
     </div>
+
+    <ion-item lines="none">
+      <ion-label>Incidencias</ion-label>
+      <ion-toggle [(ngModel)]="incidenciasHabilitadas" (ionChange)="actualizarConfig()"></ion-toggle>
+    </ion-item>
     <!-- Grupo de botones -->
     <div class="button-group">
       <ion-button expand="block" shape="round" (click)="goToUserManagement()">
