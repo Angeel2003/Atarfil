@@ -51,6 +51,10 @@ export class AdministratorPanelPage implements OnInit {
     this.router.navigate(['/user-management']);
   }
 
+  goToActionMaterialManagement() {
+    this.router.navigate(['/action-material-management']);
+  }
+
   goToIncidents() {
     this.router.navigate(['/incidents']);
   }

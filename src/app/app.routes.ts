@@ -68,6 +68,18 @@ export const routes: Routes = [
   {
     path: 'subtask-detail',
     loadComponent: () => import('./operator-panel/periodic-task-detail/subtask-detail/subtask-detail.page').then( m => m.SubtaskDetailPage)
+  },
+  {
+    path: 'action-material-management',
+    loadComponent: () => import('./administrator-panel/action-material-management/action-material-management.page').then( m => m.ActionMaterialManagementPage)
+  },
+  {
+    path: 'add-action',
+    loadComponent: () => import('./administrator-panel/action-material-management/add-action/add-action.page').then( m => m.AddActionPage)
+  },
+  {
+    path: 'add-material',
+    loadComponent: () => import('./administrator-panel/action-material-management/add-material/add-material.page').then( m => m.AddMaterialPage)
   }
 
 

@@ -468,6 +468,17 @@ app.patch('/config/incidencia-en-pausa', async (req, res) => {
   }
 });
 
+// Obtener las acciones disponibles
+app.get('/acciones', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM accion ORDER BY nombre');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener acciones:', error);
+    res.status(500).json({ error: 'No se pudo obtener la lista de acciones' });
+  }
+});
+
 // Obtener los materiales disponibles
 app.get('/materiales', async (req, res) => {
   try {
@@ -479,11 +490,98 @@ app.get('/materiales', async (req, res) => {
   }
 });
 
+// Endpoint para crear una nueva accion
+app.post('/acciones', async (req, res) => {
+  try {
+    const { nombre, descripcion } = req.body;
+
+    // Validación básica de campos obligatorios
+    if (!nombre || !descripcion) {
+      return res.status(400).json({ error: 'Campos obligatorios no proporcionados.' });
+    }
+
+    // Se mapean los campos recibidos a los nombres de las columnas en la base de datos
+    const insertQuery = `
+      INSERT INTO accion (nombre, descripcion)
+      VALUES ($1, $2)
+      RETURNING *;
+    `;
+    const values = [nombre, descripcion];
+
+    const result = await pool.query(insertQuery, values);
+
+    // Se devuelve la accion creada
+    res.status(201).json({ message: 'Acción creada correctamente', accion: result.rows[0] });
+  } catch (error) {
+    console.error('Error al crear acción:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Endpoint para crear un nuevo material
+app.post('/materiales', async (req, res) => {
+  try {
+    const { nombre, descripcion, codigo } = req.body;
+
+    // Validación básica de campos obligatorios
+    if (!nombre || !descripcion || !codigo) {
+      return res.status(400).json({ error: 'Campos obligatorios no proporcionados.' });
+    }
+
+    // Se mapean los campos recibidos a los nombres de las columnas en la base de datos
+    const insertQuery = `
+      INSERT INTO material (nombre, descripcion, codigo)
+      VALUES ($1, $2, $3)
+      RETURNING *;
+    `;
+    const values = [nombre, descripcion, codigo];
+
+    const result = await pool.query(insertQuery, values);
+
+    // Se devuelve el material creado
+    res.status(201).json({ message: 'Material creada correctamente', material: result.rows[0] });
+  } catch (error) {
+    console.error('Error al crear material:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Endpoint para eliminar una accion
+app.delete('/acciones/:id', async (req, res) => {
+  const actionId = req.params.id;
+  try {
+    const resultado = await pool.query('DELETE FROM accion WHERE id = $1', [actionId]);
+    if (resultado.rowCount > 0) {
+      res.json({ message: 'Acción eliminada con éxito' });
+    } else {
+      res.status(404).json({ error: 'Acción no encontrada' });
+    }
+  } catch (error) {
+    console.error('Error al eliminar acción:', error);
+    res.status(500).json({ error: 'Error al eliminar acción' });
+  }
+});
+
+// Endpoint para eliminar un material
+app.delete('/materiales/:id', async (req, res) => {
+  const materialId = req.params.id;
+  try {
+    const resultado = await pool.query('DELETE FROM material WHERE id = $1', [materialId]);
+    if (resultado.rowCount > 0) {
+      res.json({ message: 'Material eliminado con éxito' });
+    } else {
+      res.status(404).json({ error: 'Mateial no encontrado' });
+    }
+  } catch (error) {
+    console.error('Error al eliminar material:', error);
+    res.status(500).json({ error: 'Error al eliminar material' });
+  }
+});
 
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('52 18 * * *', async () => {
+cron.schedule('31 10 * * *', async () => {
   try {
     console.log('Ejecutando tarea programada...');
 

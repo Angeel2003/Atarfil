@@ -18,7 +18,7 @@ export class SubtaskDetailPage implements OnInit {
   tarea: any = {};
   zona: any;
   incidencia: any = {
-    tipo_actuacion: '',
+    tipo_actuacion: [] as string[],
     material_necesario: [] as string[],
     hora_inicio: [] as string[],
     hora_fin: '',
@@ -31,7 +31,11 @@ export class SubtaskDetailPage implements OnInit {
   
   materiales: any[] = [];
   filtroMaterial: string = '';
-  modalAbierto: boolean = false;
+  modalAbiertoMaterial: boolean = false;
+
+  acciones: any[] = [];
+  filtroAccion: string = '';
+  modalAbiertoAccion: boolean = false;
 
   private apiUrl = environment.apiUrl;
 
@@ -63,6 +67,12 @@ export class SubtaskDetailPage implements OnInit {
   
     this.horaInicio = this.incidencia.hora_inicio[0];
 
+    // Cargar acciones desde la API
+    this.http.get<any[]>(`${this.apiUrl}/acciones`).subscribe({
+      next: (data) => this.acciones = data,
+      error: (err) => console.error('Error al cargar acciones:', err)
+    });
+
     // Cargar materiales desde la API
     this.http.get<any[]>(`${this.apiUrl}/materiales`).subscribe({
       next: (data) => this.materiales = data,
@@ -76,6 +86,13 @@ export class SubtaskDetailPage implements OnInit {
     return now.toTimeString().split(' ')[0];
   }
 
+  accionesFiltradas() {
+    const filtro = this.filtroAccion.toLowerCase();
+    return this.acciones.filter(mat =>
+      mat.nombre.toLowerCase().includes(filtro)
+    );
+  }
+
   materialesFiltrados() {
     const filtro = this.filtroMaterial.toLowerCase();
     return this.materiales.filter(mat =>
@@ -83,16 +100,37 @@ export class SubtaskDetailPage implements OnInit {
     );
   }
 
+  abrirModalAcciones() {
+    this.modalAbiertoAccion = true;
+  }
+
+  cerrarModalAcciones() {
+    this.modalAbiertoAccion = false;
+  }
+
   abrirModalMateriales() {
-    this.modalAbierto = true;
+    this.modalAbiertoMaterial = true;
   }
 
-  cerrarModal() {
-    this.modalAbierto = false;
+  cerrarModalMateriales() {
+    this.modalAbiertoMaterial = false;
   }
 
-  estaSeleccionado(nombre: string): boolean {
+  estaSeleccionadoAccion(nombre: string): boolean {
+    return this.incidencia.tipo_actuacion.includes(nombre);
+  }
+
+  estaSeleccionadoMaterial(nombre: string): boolean {
     return this.incidencia.material_necesario.includes(nombre);
+  }
+
+  toggleAccion(nombre: string) {
+    const index = this.incidencia.tipo_actuacion.indexOf(nombre);
+    if (index > -1) {
+      this.incidencia.tipo_actuacion.splice(index, 1);
+    } else {
+      this.incidencia.tipo_actuacion.push(nombre);
+    }
   }
 
   toggleMaterial(nombre: string) {
@@ -104,8 +142,12 @@ export class SubtaskDetailPage implements OnInit {
     }
   }
 
-  confirmarSeleccion() {
-    this.cerrarModal();
+  confirmarSeleccionAccion() {
+    this.cerrarModalAcciones();
+  }
+
+  confirmarSeleccionMaterial() {
+    this.cerrarModalMateriales();
   }
 
   async marcarComoCompletado() {
@@ -130,7 +172,7 @@ export class SubtaskDetailPage implements OnInit {
   }
 
   async marcarComoEnPausa() {
-    if (!this.incidencia.tipo_actuacion.trim()) {
+    if (this.incidencia.tipo_actuacion.length === 0) {
       const alert = await this.alertCtrl.create({
         header: 'Aviso',
         message: 'Debes ingresar un "Tipo de Actuación" para registrar la tarea.',

@@ -18,16 +18,18 @@
   <form>
 
     <!-- Tipo de actuación -->
-    <ion-item>
-      <ion-label position="floating">Tipo de actuación</ion-label>
-      <ion-input name="tipo_actuacion" [(ngModel)]="incidencia.tipo_actuacion" [readonly]="!esEditable"></ion-input>
+    <ion-item *ngIf="esEditable">
+      <ion-label>Tipo de actuación</ion-label>
+      <ion-button class="material-button" expand="block" (click)="abrirModalAcciones()">
+        Seleccionar ({{ incidencia.tipo_actuacion.length || 0 }})
+      </ion-button>
     </ion-item>
 
     <!-- Material necesario -->
     <ion-item *ngIf="esEditable">
       <ion-label>Material necesario</ion-label>
       <ion-button class="material-button" expand="block" (click)="abrirModalMateriales()">
-        Seleccionar
+        Seleccionar ({{ incidencia.material_necesario.length || 0 }})
       </ion-button>
     </ion-item>
 
@@ -61,14 +63,49 @@
     </div>
   </form>
 
-  <!-- MODAL -->
-  <ion-modal [isOpen]="modalAbierto" (didDismiss)="cerrarModal()">
+  <!-- MODAL ACCIONES -->
+  <ion-modal [isOpen]="modalAbiertoAccion" (didDismiss)="cerrarModalAcciones()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title class="modal-title">Seleccionar Acciones</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarModalAcciones()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <ion-searchbar [(ngModel)]="filtroAccion" placeholder="Buscar..."></ion-searchbar>
+
+        <ion-list class="modal-list">
+          <ion-item class="modal-item" lines="none" *ngFor="let acc of accionesFiltradas()">
+            <ion-checkbox
+              slot="start"
+              [checked]="estaSeleccionadoAccion(acc.nombre)"
+              (ionChange)="toggleAccion(acc.nombre)">
+            </ion-checkbox>
+            <ion-label class="modal-label">
+              {{ acc.nombre }}
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <ion-button class="confirm-selection-button" expand="block" (click)="confirmarSeleccionAccion()">
+          Confirmar Selección
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- MODAL MATERIAL -->
+  <ion-modal [isOpen]="modalAbiertoMaterial" (didDismiss)="cerrarModalMateriales()">
     <ng-template>
       <ion-header>
         <ion-toolbar>
           <ion-title class="modal-title">Seleccionar materiales</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+            <ion-button (click)="cerrarModalMateriales()">Cerrar</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
@@ -80,7 +117,7 @@
           <ion-item class="modal-item" lines="none" *ngFor="let mat of materialesFiltrados()">
             <ion-checkbox
               slot="start"
-              [checked]="estaSeleccionado(mat.nombre)"
+              [checked]="estaSeleccionadoMaterial(mat.nombre)"
               (ionChange)="toggleMaterial(mat.nombre)">
             </ion-checkbox>
             <ion-label class="modal-label">
@@ -89,7 +126,7 @@
           </ion-item>
         </ion-list>
 
-        <ion-button class="confirm-selection-button" expand="block" (click)="confirmarSeleccion()">
+        <ion-button class="confirm-selection-button" expand="block" (click)="confirmarSeleccionMaterial()">
           Confirmar Selección
         </ion-button>
       </ion-content>
