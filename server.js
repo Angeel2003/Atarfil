@@ -10,12 +10,16 @@ const saltRounds = 10;
 
 // Middleware para parsear JSON y permitir CORS
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Configuración de la conexión a PostgreSQL
 const pool = new Pool({
   user: 'postgres',
-  host: 'localhost',
+  host: '192.168.1.135',
   database: 'atarfil',
   password: 'password',
   port: 5432,
@@ -281,7 +285,7 @@ app.post('/tareas-periodicas', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error al insertar tarea periódica:', error);
+    console.error('Error al insertar tarea periódica:', error);
     res.status(500).json({ error: 'Error al insertar tarea periódica' });
   }
 });
@@ -634,6 +638,6 @@ cron.schedule('31 10 * * *', async () => {
 
 // Iniciar el servidor en el puerto 3000
 const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor en ejecución en http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Servidor en ejecución en http://192.168.1.135:${PORT}`);
 });
