@@ -12,7 +12,7 @@ const saltRounds = 10;
 app.use(express.json());
 app.use(cors({
   origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -582,10 +582,41 @@ app.delete('/materiales/:id', async (req, res) => {
   }
 });
 
+app.post('/tareas_completadas', async (req, res) => {
+  try {
+    const { tipo_actuacion, hora_inicio, hora_fin, fecha } = req.body;
+
+    if (!tipo_actuacion || !hora_inicio || !hora_fin || !fecha) {
+      return res.status(400).json({ error: 'Faltan campos obligatorios.' });
+    }
+
+    const insertQuery = `
+      INSERT INTO tareas_completadas (tarea)
+      VALUES ($1)
+      RETURNING *;
+    `;
+
+    // Envolvemos los datos en un objeto tarea
+    const tarea = {
+      tipo_actuacion,
+      hora_inicio,
+      hora_fin,
+      fecha
+    };
+
+    const result = await pool.query(insertQuery, [tarea]);
+    res.status(201).json({ message: 'Tarea completada insertada correctamente', tarea: result.rows[0] });
+
+  } catch (error) {
+    console.error('Error al insertar tarea completada:', error);
+    res.status(500).json({ error: 'Error al insertar la tarea completada' });
+  }
+});
+
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('31 10 * * *', async () => {
+cron.schedule('36 17 * * *', async () => {
   try {
     console.log('Ejecutando tarea programada...');
 

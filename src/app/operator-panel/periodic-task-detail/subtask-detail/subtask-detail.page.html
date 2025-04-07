@@ -57,8 +57,14 @@
       <ion-button class="task-button" expand="block" shape="round" (click)="marcarComoCompletado()" *ngIf="esEditable">
         Tarea revisada
       </ion-button>
-      <ion-button class="pause-button" expand="block" shape="round" (click)="marcarComoEnPausa()" *ngIf="esEditable">
-        Pausa
+      <!-- Mostrar Pausa o Reanudar según el estado -->
+      <ion-button 
+        [ngClass]="subtarea.estado === 'en-pausa' ? 'reanudar-button' : 'pause-button'"
+        expand="block" 
+        shape="round" 
+        (click)="subtarea.estado === 'en-pausa' ? reanudarTarea() : marcarComoEnPausa()" 
+        *ngIf="esEditable">
+        {{ subtarea.estado === 'en-pausa' ? 'Reanudar' : 'Pausa' }}
       </ion-button>
     </div>
   </form>

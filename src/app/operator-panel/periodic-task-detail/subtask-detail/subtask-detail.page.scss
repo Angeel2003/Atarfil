@@ -73,6 +73,15 @@ ion-input {
         margin-bottom: 30px;
         margin: 20px auto;
     }
+
+    .reanudar-button {
+        width: 300px;
+        height: 50px;
+        --background: rgb(170, 170, 170);
+        --color: #000;
+        margin-bottom: 30px;
+        margin: 20px auto;
+    }
 }
 
 ion-modal::part(content) {

@@ -57,14 +57,16 @@ export class SubtaskDetailPage implements OnInit {
   }
 
   ngOnInit() {
-    const horaActual = this.getFormattedTime();
-  
     if (!Array.isArray(this.incidencia.hora_inicio)) {
-      this.incidencia.hora_inicio = [horaActual];
-    } else {
+      this.incidencia.hora_inicio = [];
+    }
+
+    if (this.incidencia.hora_inicio.length === 0) {
+      const horaActual = this.getFormattedTime();
       this.incidencia.hora_inicio.push(horaActual);
     }
-  
+
+    // Mostrar siempre la primera hora (aunque luego se agreguen más)
     this.horaInicio = this.incidencia.hora_inicio[0];
 
     // Cargar acciones desde la API
@@ -151,7 +153,7 @@ export class SubtaskDetailPage implements OnInit {
   }
 
   async marcarComoCompletado() {
-    if (!this.incidencia.tipo_actuacion.trim()) {
+    if (this.incidencia.tipo_actuacion.length === 0) {
       const alert = await this.alertCtrl.create({
         header: 'Aviso',
         message: 'Debes ingresar un "Tipo de Actuación" para registrar la tarea.',
@@ -220,6 +222,14 @@ export class SubtaskDetailPage implements OnInit {
 
     await this.actualizarEstado();
   }
+
+  reanudarTarea() {
+    const nuevaHora = this.getFormattedTime();
+    this.incidencia.hora_inicio.push(nuevaHora);
+    this.horaInicio = this.incidencia.hora_inicio[0];
+    this.subtarea.estado = 'no-iniciada';
+    this.esEditable = true;
+  }  
 
   async actualizarEstado() {
     this.router.navigate(['/periodic-task-detail'], { state: { tarea: this.tarea } });

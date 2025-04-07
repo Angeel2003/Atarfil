@@ -80,6 +80,10 @@ export class OperatorPanelPage implements OnInit {
 
   verTareaPeriodica(tarea: any) {
     this.router.navigate(['/periodic-task-detail'], { state: { tarea } });
-  }  
+  }
 
+  goToCreateTask() {
+    this.router.navigate(['/create-task']);
+  }
+  
 }
