@@ -20,7 +20,7 @@
 
     <!-- Seleccionar Operadores -->
     <ion-item>
-      <ion-label>Operadores</ion-label>
+      <ion-label>Operadores <span style="color: red">*</span></ion-label>
       <ion-select id="usuario_asignado" name="usuario_asignado" multiple="true" [(ngModel)]="tarea_urgente.usuario_asignado" placeholder="Seleccione">
         <ion-select-option *ngFor="let usuario of usuarios" [value]="usuario.id">
           {{ usuario.nombre_completo }}
@@ -30,19 +30,19 @@
 
     <!-- Tarea a Asignar -->
     <ion-item>
-      <ion-label position="floating">Tarea a Asignar</ion-label>
+      <ion-label position="floating">Tarea a Asignar <span style="color: red">*</span></ion-label>
       <ion-textarea id="tarea_a_asignar" class="large-textarea" name="tarea_a_asignar" [(ngModel)]="tarea_urgente.tarea_a_asignar" placeholder="Escribe aquí" required></ion-textarea>
     </ion-item>
 
     <!-- Fecha -->
     <ion-item>
-      <ion-label>Fecha</ion-label>
+      <ion-label position="fixed">Fecha <span style="color: red">*</span></ion-label>
       <ion-input id="fecha" class="small-input" type="date" name="fecha" [(ngModel)]="tarea_urgente.fecha" required></ion-input>
     </ion-item>
 
     <!-- Hora -->
     <ion-item>
-      <ion-label>Hora</ion-label>
+      <ion-label position="fixed">Hora <span style="color: red">*</span></ion-label>
       <ion-input id="hora" class="small-input" type="time" name="hora" [(ngModel)]="tarea_urgente.hora" required></ion-input>
     </ion-item>
 

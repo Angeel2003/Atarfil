@@ -20,19 +20,19 @@
 
     <!-- Área -->
     <ion-item>
-      <ion-label position="floating">Área</ion-label>
+      <ion-label position="floating">Área <span style="color: red">*</span></ion-label>
       <ion-input [(ngModel)]="tarea.area" name="area" required></ion-input>
     </ion-item>
 
     <!-- Inspección -->
     <ion-item>
-      <ion-label position="floating">Inspección (Opcional)</ion-label>
+      <ion-label position="floating">Inspección</ion-label>
       <ion-input [(ngModel)]="tarea.inspeccion" name="inspeccion"></ion-input>
     </ion-item>
 
     <!-- Periodicidad -->
     <ion-item>
-      <ion-label>Periodicidad</ion-label>
+      <ion-label>Periodicidad <span style="color: red">*</span></ion-label>
       <ion-select [(ngModel)]="tarea.periodicidad" name="periodicidad" placeholder="Seleccione" required>
         <ion-select-option value="Diaria">Diaria</ion-select-option>
         <ion-select-option value="Semanal">Semanal</ion-select-option>

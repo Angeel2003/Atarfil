@@ -19,7 +19,7 @@
 
     <!-- Tipo de actuación -->
     <ion-item *ngIf="esEditable">
-      <ion-label>Tipo de actuación</ion-label>
+      <ion-label>Tipo de actuación <span style="color: red">*</span></ion-label>
       <ion-button class="material-button" expand="block" (click)="abrirModalAcciones()">
         Seleccionar ({{ incidencia.tipo_actuacion.length || 0 }})
       </ion-button>
