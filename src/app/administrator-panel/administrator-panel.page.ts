@@ -63,6 +63,10 @@ export class AdministratorPanelPage implements OnInit {
     this.router.navigate(['/pdf-reports']);
   }
 
+  goToManuals() {
+    this.router.navigate(['/manuals']);
+  }
+
   exit() {
     this.router.navigate(['/home']);
   }

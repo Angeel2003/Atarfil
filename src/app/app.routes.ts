@@ -84,6 +84,10 @@ export const routes: Routes = [
   {
     path: 'create-task',
     loadComponent: () => import('./operator-panel/create-task/create-task.page').then( m => m.CreateTaskPage)
+  },
+  {
+    path: 'manuals',
+    loadComponent: () => import('./administrator-panel/manuals/manuals.page').then( m => m.ManualsPage)
   }
 
 
