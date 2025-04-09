@@ -4,6 +4,9 @@ const { Pool } = require('pg');
 const cors = require('cors');
 
 const cron = require('node-cron');
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const saltRounds = 10;
@@ -613,10 +616,21 @@ app.post('/tareas_completadas', async (req, res) => {
   }
 });
 
+// Obtener todos los reportes PDF
+app.get('/reportes-pdf', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM reportes_pdf ORDER BY fecha DESC');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener los reportes PDF:', error);
+    res.status(500).json({ error: 'Error al obtener los reportes PDF' });
+  }
+});
+
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('36 17 * * *', async () => {
+cron.schedule('11 17 * * *', async () => {
   try {
     console.log('Ejecutando tarea programada...');
 
@@ -664,6 +678,140 @@ cron.schedule('36 17 * * *', async () => {
     console.log('Tareas periódicas procesadas correctamente.');
   } catch (error) {
     console.error('Error en la tarea programada:', error);
+  }
+});
+
+// Generar reporte todos los días a las 23:00
+
+cron.schedule('28 17 * * *', async () => {
+  try {
+    console.log('⏰ Generando reporte PDF de tareas...');
+
+    const fecha = new Date().toISOString().split('T')[0];
+    const nombreArchivo = `reporte_${fecha}.pdf`;
+    const rutaArchivo = path.join(__dirname, 'pdf-reports', nombreArchivo);
+
+    if (!fs.existsSync(path.dirname(rutaArchivo))) {
+      fs.mkdirSync(path.dirname(rutaArchivo), { recursive: true });
+    }
+
+    const doc = new PDFDocument({ margin: 40 });
+    doc.pipe(fs.createWriteStream(rutaArchivo));
+
+    const formatFecha = (fechaISO) => new Date(fechaISO).toLocaleString('es-ES');
+
+    // Crear portada elegante
+    const crearPortada = (doc, fecha) => {
+      doc.page.margins = { top: 0, bottom: 0, left: 0, right: 0 };
+
+      const width = doc.page.width;
+      const height = doc.page.height;
+
+      doc.fillColor('#243270'); // Azul oscuro
+      doc.fontSize(30).font('Helvetica-Bold');
+      doc.text('REPORTE DE TAREAS', 0, 150, {
+        align: 'center'
+      });
+
+      doc.moveDown(2);
+      doc.fontSize(18).font('Helvetica');
+      doc.fillColor('black');
+      doc.text(`Fecha del reporte: ${fecha}`, {
+        align: 'center'
+      });
+
+      doc.image('src/assets/images/logo.png', (width - 150) / 2, 40, { width: 150 });
+
+      doc.moveDown(6);
+      doc.fontSize(14).fillColor('#666666');
+      doc.text('Generado automáticamente a las 23:00 por el sistema de mantenimiento.', {
+        align: 'center'
+      });
+    };
+
+    // Portada del reporte
+    crearPortada(doc, fecha);
+
+    // Consulta de datos
+    const completadas = await pool.query('SELECT * FROM tareas_completadas');
+    const noTerminadas = await pool.query('SELECT * FROM tareas_no_terminadas');
+    const aRealizar = await pool.query(`
+      SELECT tp.*, ta.fecha 
+      FROM tareas_a_realizar ta
+      JOIN tareas_periodicas tp ON ta.tarea_periodica_id = tp.id
+    `);
+
+    const agregarSeccion = (titulo, datos, formatter) => {
+      doc.addPage().fontSize(16).text(titulo, { underline: true }).moveDown(0.5);
+      if (datos.length === 0) {
+        doc.fontSize(12).text('Sin registros').moveDown();
+      } else {
+        datos.forEach((item, i) => {
+          doc.fontSize(12).text(`${i + 1}.`).moveDown(0.2);
+          formatter(item);
+          doc.moveDown(0.8);
+        });
+      }
+    };
+
+    // FORMATTERS
+
+    const formatCompletada = (item) => {
+      doc.text(`Fecha: ${formatFecha(item.fecha)}`);
+      const t = item.tarea;
+      if (t) {
+        if (t.area) doc.text(`Área: ${t.area}`);
+        if (t.periodicidad) doc.text(`Periodicidad: ${t.periodicidad}`);
+        if (t.inspeccion) doc.text(`Inspección: ${t.inspeccion}`);
+        if (t.zonas) {
+          t.zonas.forEach((zona, zi) => {
+            doc.text(`Zona ${zi + 1}: ${zona.nombre}`);
+            zona.subtareas?.forEach((sub, si) => {
+              doc.text(`    ➤ Subtarea ${si + 1}: ${sub.nombre}`);
+              doc.text(`       Estado: ${sub.estado}`);
+              const inc = sub.incidencia || {};
+              doc.text(`       Material: ${inc.material_necesario?.join(', ') || '—'}`);
+              doc.text(`       Actuación: ${inc.tipo_actuacion?.join(', ') || '—'}`);
+              doc.text(`       Inicio: ${inc.hora_inicio?.join(', ') || '—'}`);
+              doc.text(`       Fin: ${inc.hora_fin || '—'}`);
+              doc.text(`       Otros: ${inc.otros || '—'}`);
+            });
+          });
+        } else if (t.tipo_actuacion) {
+          doc.text(`Tipo actuación: ${t.tipo_actuacion}`);
+          doc.text(`Hora inicio: ${t.hora_inicio || '—'}`);
+          doc.text(`Hora fin: ${t.hora_fin || '—'}`);
+        }
+      }
+    };
+
+    const formatNoTerminada = formatCompletada;
+
+    const formatARealizar = (item) => {
+      doc.text(`Fecha: ${formatFecha(item.fecha)}`);
+      doc.text(`Área: ${item.area}`);
+      doc.text(`Inspección: ${item.inspeccion || '—'}`);
+      doc.text(`Periodicidad: ${item.periodicidad}`);
+      item.zonas?.forEach((zona, zi) => {
+        doc.text(`Zona ${zi + 1}: ${zona.nombre}`);
+        zona.subtareas?.forEach((sub, si) => {
+          doc.text(`    ➤ Subtarea ${si + 1}: ${sub}`);
+        });
+      });
+    };
+
+    // Agregar secciones
+    agregarSeccion('Tareas Completadas', completadas.rows, formatCompletada);
+    agregarSeccion('Tareas No Terminadas', noTerminadas.rows, formatNoTerminada);
+    agregarSeccion('Tareas a Realizar', aRealizar.rows, formatARealizar);
+
+    doc.end();
+
+    // Guardar en base de datos
+    await pool.query('INSERT INTO reportes_pdf (nombre_archivo) VALUES ($1)', [nombreArchivo]);
+    console.log(`Reporte generado correctamente: ${nombreArchivo}`);
+  } catch (error) {
+    console.error('Error al generar el reporte PDF:', error);
   }
 });
 
