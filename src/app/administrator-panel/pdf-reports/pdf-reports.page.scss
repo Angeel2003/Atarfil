@@ -19,3 +19,35 @@ ion-title {
     max-height: 50px;
     width: auto;
 }
+
+ion-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.report-item {
+    width: 95%;
+    max-width: 650px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    padding: 2px;
+
+    p {
+        margin-top: 6px;
+    }
+}
+
+.download-button {
+    --padding-start: 0;
+    --padding-end: 0;
+
+    color: #243270;
+}
+
+.download-icon {
+    font-size: 24px;
+}

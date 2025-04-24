@@ -627,6 +627,22 @@ app.get('/reportes-pdf', async (req, res) => {
   }
 });
 
+// Endpoint para descargar un reporte por su ID
+app.get('/reportes/:nombre', (req, res) => {
+  const nombre = req.params.nombre;
+  const filePath = path.join(__dirname, 'pdf-reports', nombre);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).send('Archivo no encontrado');
+  }
+
+  res.setHeader('Content-Disposition', `attachment; filename=${nombre}`);
+  res.setHeader('Content-Type', 'application/pdf');
+
+  const fileStream = fs.createReadStream(filePath);
+  fileStream.pipe(res);
+});
+
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
@@ -682,10 +698,9 @@ cron.schedule('11 17 * * *', async () => {
 });
 
 // Generar reporte todos los días a las 23:00
-
 cron.schedule('28 17 * * *', async () => {
   try {
-    console.log('⏰ Generando reporte PDF de tareas...');
+    console.log('Generando reporte PDF de tareas...');
 
     const fecha = new Date().toISOString().split('T')[0];
     const nombreArchivo = `reporte_${fecha}.pdf`;

@@ -15,9 +15,15 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">pdf-reports</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-list lines="none">
+    <ion-item class="report-item" *ngFor="let report of reports">
+      <ion-label>
+        <h2>{{ report.nombre_archivo }}</h2>
+        <p><strong>Fecha: </strong>{{ report.fecha | date: 'd\'-\'MM\'-\'yyyy\'' }}</p>
+      </ion-label>
+      <ion-button class="download-button" fill="clear" (click)="downloadReport(report)">
+        <ion-icon class="download-icon" slot="icon-only" name="cloud-download-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
 </ion-content>

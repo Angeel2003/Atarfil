@@ -86,4 +86,8 @@ export class OperatorPanelPage implements OnInit {
     this.router.navigate(['/create-task']);
   }
   
+  goToManuals() {
+    this.router.navigate(['/manuals']);
+  }
+  
 }
