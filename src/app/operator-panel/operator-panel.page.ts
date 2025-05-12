@@ -1,18 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonBackButton, IonIcon, IonLabel, IonListHeader, IonCard, IonCardContent } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonButtons, IonIcon, IonLabel, IonListHeader, IonCard, IonCardContent } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
+import { logOutOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-operator-panel',
   templateUrl: './operator-panel.page.html',
   styleUrls: ['./operator-panel.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButton, IonButtons, IonBackButton, IonIcon, IonLabel, IonListHeader, IonCard, IonCardContent]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButton, IonButtons, IonIcon, IonLabel, IonListHeader, IonCard, IonCardContent]
 })
 export class OperatorPanelPage implements OnInit {
   usuario: any;
@@ -23,6 +25,11 @@ export class OperatorPanelPage implements OnInit {
   private apiUrl = environment.apiUrl;
 
   constructor(private router: Router, private http: HttpClient) {
+
+    addIcons({
+          logOutOutline
+    })
+
     this.router.events.subscribe(() => {
       this.loadTareas();
     });
@@ -88,6 +95,10 @@ export class OperatorPanelPage implements OnInit {
   
   goToManuals() {
     this.router.navigate(['/manuals']);
+  }
+
+  exit() {
+    this.router.navigate(['/home']);
   }
   
 }
