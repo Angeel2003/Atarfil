@@ -13,11 +13,29 @@ const saltRounds = 10;
 
 // Middleware para parsear JSON y permitir CORS
 app.use(express.json());
-app.use(cors({
+
+const corsOptions = {
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+
+// OPCIONAL: extra seguro para cualquier OPTIONS olvidado
+app.options('*', cors(corsOptions));
+
+// SOLUCIÓN RECOMENDADA PARA APK + WEBVIEW
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
 
 // Configuración de la conexión a PostgreSQL
 const pool = new Pool({
@@ -646,7 +664,7 @@ app.get('/reportes/:nombre', (req, res) => {
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('11 17 * * *', async () => {
+cron.schedule('00 00 * * *', async () => {
   try {
     console.log('Ejecutando tarea programada...');
 
@@ -698,7 +716,7 @@ cron.schedule('11 17 * * *', async () => {
 });
 
 // Generar reporte todos los días a las 23:00
-cron.schedule('28 17 * * *', async () => {
+cron.schedule('00 23 * * *', async () => {
   try {
     console.log('Generando reporte PDF de tareas...');
 
@@ -833,5 +851,5 @@ cron.schedule('28 17 * * *', async () => {
 // Iniciar el servidor en el puerto 3000
 const PORT = 3000;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor en ejecución en http://192.168.1.135:${PORT}`);
+  console.log(`Servidor en ejecución en https://192.168.1.135:${PORT}`);
 });

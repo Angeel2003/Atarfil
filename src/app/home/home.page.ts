@@ -93,7 +93,6 @@ export class HomePage implements OnInit{
       error: (error) => {
         console.error('Error de autenticación:', error);
         alert('Error de autenticación. Por favor, revisa tus credenciales.');
-        // alert('ERROR REAL: ' + JSON.stringify(error));
       }
     });
   }
