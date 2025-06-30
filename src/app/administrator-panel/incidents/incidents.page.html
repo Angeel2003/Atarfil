@@ -1,0 +1,66 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/administrator-panel"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets/images/logo.png" alt="Logo" class="logo">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="true" shape="round">
+        <ion-icon slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="button-group">
+    <ion-button class="alta-button" shape="round" (click)="goToAddUrgentTask()">
+      Crear Tarea Extraordinaria
+    </ion-button>
+    <ion-button class="alta-button" shape="round" (click)="goToAddPeriodicTask()">
+      Crear Tarea Periódica
+    </ion-button>
+  </div>
+
+  <!-- Sección de Incidencias -->
+  <div class="incidencias" *ngIf="incidents.length > 0">
+    <ion-list-header class="section-title">
+      <ion-label><strong>Incidencias</strong></ion-label>
+    </ion-list-header>
+
+    <div class="container">
+      <ion-card *ngFor="let incident of incidents" class="card" (click)="goIncident(incident.id)">
+        <ion-card-content>
+          <h2>{{ incident.area }}</h2>
+          <p>
+            <span *ngIf="incident.zona">{{ incident.zona }}: </span>{{ incident.subzona }}
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+  
+  <!-- Sección de Tareas Completadas -->
+  <div class="tareas" *ngIf="completedTasks.length > 0">
+    <ion-list-header class="section-title">
+      <ion-label><strong>Tareas Completadas</strong></ion-label>
+    </ion-list-header>
+
+    <div class="container">
+      <ion-card *ngFor="let task of completedTasks" class="card" (click)="goCompletedTask(task.id)">
+        <ion-card-content>
+          <h2>{{ task.tarea_a_asignar }}</h2>
+          <p><strong>Fecha: </strong>{{ task.fechaCompleta | date: 'd\'/\'MM\'/\'yyyy\'' }} &nbsp; <strong>Hora: </strong>{{ task.fechaCompleta | date: 'HH:mm' }}</p>
+        </ion-card-content>
+      </ion-card>
+    </div>    
+  </div>
+
+  <!-- Mensaje si no hay incidencias ni tareas completadas -->
+  <div *ngIf="incidents.length === 0 && completedTasks.length === 0" class="no-tasks">
+    <p>No hay incidencias ni tareas completadas por ahora.</p>
+  </div>
+  
+</ion-content>

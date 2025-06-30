@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/incidents"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets/images/logo.png" alt="Logo" class="logo">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="true" shape="round">
+        <ion-icon slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card *ngIf="incident">
+    <ion-card-header>
+      <ion-card-title>{{ incident.area }}</ion-card-title>
+      <ion-card-subtitle>
+        <span *ngIf="incident.zona">{{ incident.zona }} - </span>{{ incident.subzona }}
+      </ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p><strong>Tipo de Actuación:</strong> {{ incident.tipo_actuacion }}</p>
+      <p><strong>Material Necesario:</strong> {{ incident.material_necesario }}</p>
+      <p><strong>Hora de Inicio:</strong> {{ incident.hora_inicio }}</p>
+      <p><strong>Hora de Fin:</strong> {{ incident.hora_fin }}</p>
+      <p><strong>Otros:</strong> {{ incident.otros }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <div class="button-group">
+    <ion-button class="crear-button" shape="round" (click)="goToAddUrgentTask()">
+      Crear Tarea Extraordinaria
+    </ion-button>
+    <ion-button class="borrar-button" shape="round" (click)="confirmDelete(incident)">
+      Borrar incidencia
+    </ion-button>
+  </div>
+</ion-content>

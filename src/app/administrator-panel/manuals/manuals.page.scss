@@ -1,0 +1,21 @@
+ion-toolbar {
+    --padding-top: 20px;
+    --padding-bottom: 5px;
+  
+    display: flex;
+    justify-content: center;
+}
+
+ion-back-button {
+    color: #243270;
+}
+
+ion-title {
+    text-align: center;
+    width: 100%;
+}
+
+.logo {
+    max-height: 50px;
+    width: auto;
+}

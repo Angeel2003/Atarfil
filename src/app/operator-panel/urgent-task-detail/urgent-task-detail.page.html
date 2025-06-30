@@ -1,0 +1,33 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/operator-panel"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets/images/logo.png" alt="Logo" class="logo">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="true" shape="round">
+        <ion-icon slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card *ngIf="tarea">
+    <ion-card-header>
+      <ion-card-title>{{ tarea.tarea_a_asignar }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Fecha:</strong> {{ tarea.fechaCompleta  | date: 'dd/MM/yyyy' }}</p>
+      <p><strong>Hora:</strong> {{ tarea.fechaCompleta  | date: 'HH:mm' }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <div class="button-group">
+    <ion-button class="notificar-button" shape="round" (click)="confirmNotification()">
+      Notificar tarea completada
+    </ion-button>
+  </div>
+</ion-content>

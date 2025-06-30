@@ -1,0 +1,59 @@
+ion-toolbar {
+    --padding-top: 20px;
+    --padding-bottom: 5px;
+  
+    display: flex;
+    justify-content: center;
+}
+
+ion-back-button {
+    color: #243270;
+}
+
+ion-title {
+    text-align: center;
+    width: 100%;
+}
+
+.logo {
+    max-height: 50px;
+    width: auto;
+}
+
+.button-group {
+    display: flex;
+
+    ion-button {
+        width: 250px;
+        height: 50px;
+        --background: #243270;
+        --color: #fff;
+        margin-bottom: 30px;
+        margin: 20px auto;
+    }
+}
+
+ion-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-item {
+    width: 95%;
+    max-width: 650px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    padding: 2px;
+}
+
+.delete-button {
+    --padding-start: 0;
+    --padding-end: 0;
+}
+
+.delete-icon {
+    font-size: 24px;
+}

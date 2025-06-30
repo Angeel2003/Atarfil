@@ -1,0 +1,66 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button class="exit-button" (click)="exit()">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets/images/logo.png" alt="Logo" class="logo">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="true" shape="round">
+        <ion-icon slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Sección de Tareas Extraordinarias -->
+  <div class="tareas" *ngIf="tareas_urgentes.length > 0">
+    <ion-list-header class="section-title">
+      <ion-label><strong>Tareas Extraordinarias</strong></ion-label>
+    </ion-list-header>
+
+    <div class="task-container">
+      <ion-card *ngFor="let tarea of tareas_urgentes" class="task-card" (click)="verTareaUrgente(tarea)">
+        <ion-card-content>
+          <h2>{{ tarea.tarea_a_asignar }}</h2>
+          <p><strong>Fecha: </strong>{{ tarea.fechaCompleta | date: 'd\'/\'MM\'/\'yyyy\'' }} &nbsp; <strong>Hora: </strong>{{ tarea.fechaCompleta | date: 'HH:mm' }}</p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+  
+  <!-- Sección de Tareas Periódicas -->
+  <div class="tareas" *ngIf="tareas_periodicas.length > 0">
+    <ion-list-header class="section-title">
+      <ion-label><strong>Tareas Periódicas</strong></ion-label>
+    </ion-list-header>
+
+    <div class="task-container">
+      <ion-card *ngFor="let tarea of tareas_periodicas" class="task-card" (click)="verTareaPeriodica(tarea)">
+        <ion-card-content>
+          <h2>{{ tarea.area }}</h2>
+          <div class="task-header">
+            <p *ngIf="tarea.inspeccion; else sinInspeccion">Inspección {{ tarea.inspeccion }}</p>
+            <ng-template #sinInspeccion>
+              <p>Sin tipo de inspección</p>
+            </ng-template>
+            <span class="task-tag">{{ tarea.periodicidad }}</span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <div class="button-group">
+      <ion-button class="tarea-button" shape="round" (click)="goToCreateTask()">
+        Crear Tarea Extraordinaria
+      </ion-button>
+      <ion-button class="manuales-button" shape="round" (click)="goToManuals()">
+        Manuales
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

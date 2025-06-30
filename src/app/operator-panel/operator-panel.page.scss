@@ -1,0 +1,99 @@
+ion-toolbar {
+    --padding-top: 20px;
+    --padding-bottom: 5px;
+  
+    display: flex;
+    justify-content: center;
+}
+
+.exit-button {
+    color: #243270;
+}
+
+ion-title {
+    text-align: center;
+    width: 100%;
+}
+
+.logo {
+    max-height: 50px;
+    width: auto;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    padding: 10px 15px;
+    color: #243270;
+}
+
+.task-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-card {
+    border-radius: 10px;
+}
+
+ion-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #243270;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+p {
+    font-size: 1rem;
+    color: #333;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.task-tag {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #243270;
+}
+
+.tareas {
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.button-group {
+    display: flex;
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+
+    .tarea-button {
+        width: 200px;
+        height: 50px;
+        --background: #243270;
+        --color: #fff;
+        margin-bottom: 30px;
+        margin: 20px auto;
+    }
+
+    .manuales-button {
+        width: 200px;
+        height: 50px;
+        --background: #243270;
+        --color: #fff;
+        margin-bottom: 30px;
+        margin: 20px auto;
+    }
+}

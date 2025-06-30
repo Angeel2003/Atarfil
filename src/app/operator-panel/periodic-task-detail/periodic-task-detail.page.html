@@ -1,0 +1,48 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/operator-panel"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets/images/logo.png" alt="Logo" class="logo">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="true" shape="round">
+        <ion-icon slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  
+  <!-- Lista de Zonas con Desplegables -->
+  <ion-accordion-group>
+    <ion-accordion *ngFor="let zona of tarea.zonas" [value]="zona.nombre">
+      <ion-item lines="none" slot="header">
+        <ion-label class="zona-title">{{ zona.nombre }}</ion-label>
+      </ion-item>
+      <div slot="content">
+        <ion-item lines="none" *ngFor="let subtarea of zona.subtareas" (click)="verDetallesSubtarea(subtarea, zona.nombre)">
+          <ion-label>{{ subtarea.nombre }}</ion-label>
+          <div class="checkbox-container">
+            <ion-checkbox
+              [checked]="subtarea.estado === 'completado'"
+              [indeterminate]="subtarea.estado === 'en-pausa'"
+              disabled="true"
+              slot="end" 
+              class="checkbox-{{ subtarea.estado }}">
+            </ion-checkbox>
+          </div>
+        </ion-item>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>  
+
+  <!-- Botón "Terminar Tarea" -->
+  <div class="button-group">
+    <ion-button class="terminar-button" shape="round" (click)="completarTarea()">
+      Terminar tarea
+    </ion-button>
+  </div>
+</ion-content>

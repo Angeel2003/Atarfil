@@ -1,0 +1,141 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/select-zone"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets/images/logo.png" alt="Logo" class="logo">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="true" shape="round">
+        <ion-icon slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form>
+
+    <!-- Tipo de actuación -->
+    <ion-item *ngIf="esEditable">
+      <ion-label>Tipo de actuación <span style="color: red">*</span></ion-label>
+      <ion-button class="material-button" expand="block" (click)="abrirModalAcciones()">
+        Seleccionar ({{ incidencia.tipo_actuacion.length || 0 }})
+      </ion-button>
+    </ion-item>
+
+    <!-- Material necesario -->
+    <ion-item *ngIf="esEditable">
+      <ion-label>Material necesario</ion-label>
+      <ion-button class="material-button" expand="block" (click)="abrirModalMateriales()">
+        Seleccionar ({{ incidencia.material_necesario.length || 0 }})
+      </ion-button>
+    </ion-item>
+
+    <!-- Hora de inicio / Hora de fin -->
+    <div class="time-container">
+      <ion-item>
+        <ion-label position="stacked">Hora de inicio</ion-label>
+        <ion-input name="hora_inicio" [(ngModel)]="incidencia.hora_inicio[0]" readonly></ion-input>
+      </ion-item>
+  
+      <ion-item>
+        <ion-label position="stacked">Hora de fin</ion-label>
+        <ion-input name="hora_fin" [(ngModel)]="incidencia.hora_fin" readonly></ion-input>
+      </ion-item>
+    </div>
+
+    <!-- Otros -->
+    <ion-item>
+      <ion-label position="floating">Otros</ion-label>
+      <ion-textarea name="otros" [(ngModel)]="incidencia.otros" [readonly]="!esEditable"></ion-textarea>
+    </ion-item>
+
+    <!-- Botón Confirmar -->
+    <div class="button-container">
+      <ion-button class="task-button" expand="block" shape="round" (click)="marcarComoCompletado()" *ngIf="esEditable">
+        Tarea revisada
+      </ion-button>
+      <!-- Mostrar Pausa o Reanudar según el estado -->
+      <ion-button 
+        [ngClass]="subtarea.estado === 'en-pausa' ? 'reanudar-button' : 'pause-button'"
+        expand="block" 
+        shape="round" 
+        (click)="subtarea.estado === 'en-pausa' ? reanudarTarea() : marcarComoEnPausa()" 
+        *ngIf="esEditable">
+        {{ subtarea.estado === 'en-pausa' ? 'Reanudar' : 'Pausa' }}
+      </ion-button>
+    </div>
+  </form>
+
+  <!-- MODAL ACCIONES -->
+  <ion-modal [isOpen]="modalAbiertoAccion" (didDismiss)="cerrarModalAcciones()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title class="modal-title">Seleccionar Acciones</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarModalAcciones()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <ion-searchbar [(ngModel)]="filtroAccion" placeholder="Buscar..."></ion-searchbar>
+
+        <ion-list class="modal-list">
+          <ion-item class="modal-item" lines="none" *ngFor="let acc of accionesFiltradas()">
+            <ion-checkbox
+              slot="start"
+              [checked]="estaSeleccionadoAccion(acc.nombre)"
+              (ionChange)="toggleAccion(acc.nombre)">
+            </ion-checkbox>
+            <ion-label class="modal-label">
+              {{ acc.nombre }}
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <ion-button class="confirm-selection-button" expand="block" (click)="confirmarSeleccionAccion()">
+          Confirmar Selección
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- MODAL MATERIAL -->
+  <ion-modal [isOpen]="modalAbiertoMaterial" (didDismiss)="cerrarModalMateriales()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title class="modal-title">Seleccionar materiales</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarModalMateriales()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <ion-searchbar [(ngModel)]="filtroMaterial" placeholder="Buscar..."></ion-searchbar>
+
+        <ion-list class="modal-list">
+          <ion-item class="modal-item" lines="none" *ngFor="let mat of materialesFiltrados()">
+            <ion-checkbox
+              slot="start"
+              [checked]="estaSeleccionadoMaterial(mat.nombre)"
+              (ionChange)="toggleMaterial(mat.nombre)">
+            </ion-checkbox>
+            <ion-label class="modal-label">
+              {{ mat.nombre }} <small *ngIf="mat.codigo">({{ mat.codigo }})</small>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <ion-button class="confirm-selection-button" expand="block" (click)="confirmarSeleccionMaterial()">
+          Confirmar Selección
+        </ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

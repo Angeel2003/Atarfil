@@ -1,0 +1,39 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/action-material-management"></ion-back-button>
+    </ion-buttons>
+    <ion-title>
+      <img src="assets/images/logo.png" alt="Logo" class="logo">
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button [disabled]="true" shape="round">
+        <ion-icon slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form (ngSubmit)="onSubmit()">
+
+    <!-- Nombre -->
+    <ion-item>
+      <ion-label position="floating">Nombre <span style="color: red">*</span></ion-label>
+      <ion-input id="nombre" type="text" name="nombre" required></ion-input>
+    </ion-item>
+
+    <!-- Descripción -->
+    <ion-item>
+      <ion-label position="floating">Descripción <span style="color: red">*</span></ion-label>
+      <ion-input id="descripcion" type="text" name="descripcion" required></ion-input>
+    </ion-item>
+
+    <!-- Botón Confirmar -->
+    <div class="button-container">
+      <ion-button class="confirm-button" type="submit" expand="block" shape="round">
+        Confirmar
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
