@@ -25,35 +25,39 @@
     </ion-button>
   </div>
 
-  <ion-list-header class="section-title">
-    <ion-label><strong>Actuaciones</strong></ion-label>
-  </ion-list-header>
+  <div class="actuaciones">
+    <ion-list-header class="section-title">
+      <ion-label><strong>Actuaciones</strong></ion-label>
+    </ion-list-header>
 
-  <ion-list lines="none">
-    <ion-item class="action-item" *ngFor="let action of actions">
-      <ion-label>
-        <h2>{{ action.nombre }}</h2>
-        <p>{{ action.descripcion }}</p>
-      </ion-label>
-      <ion-button class="delete-button" fill="clear" color="danger" (click)="confirmDeleteAction(action)">
-        <ion-icon class="delete-icon" slot="icon-only" name="trash"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-list>
+    <ion-list lines="none">
+      <ion-item class="action-item" *ngFor="let action of actions">
+        <ion-label>
+          <h2>{{ action.nombre }}</h2>
+          <p>{{ action.descripcion }}</p>
+        </ion-label>
+        <ion-button class="delete-button" fill="clear" color="danger" (click)="confirmDeleteAction(action)">
+          <ion-icon class="delete-icon" slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
 
-  <ion-list-header class="section-title">
-    <ion-label><strong>Materiales</strong></ion-label>
-  </ion-list-header>
+  <div class="materiales">
+    <ion-list-header class="section-title">
+      <ion-label><strong>Materiales</strong></ion-label>
+    </ion-list-header>
 
-  <ion-list lines="none">
-    <ion-item class="material-item" *ngFor="let material of materials">
-      <ion-label>
-        <h2>{{ material.nombre }}</h2>
-        <p>{{ material.descripcion }}</p> <small>{{ material.codigo }}</small>
-      </ion-label>
-      <ion-button class="delete-button" fill="clear" color="danger" (click)="confirmDeleteMaterial(material)">
-        <ion-icon class="delete-icon" slot="icon-only" name="trash"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-list>
+    <ion-list lines="none">
+      <ion-item class="material-item" *ngFor="let material of materials">
+        <ion-label>
+          <h2>{{ material.nombre }}</h2>
+          <p>{{ material.descripcion }}</p> <small>{{ material.codigo }}</small>
+        </ion-label>
+        <ion-button class="delete-button" fill="clear" color="danger" (click)="confirmDeleteMaterial(material)">
+          <ion-icon class="delete-icon" slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
 </ion-content>

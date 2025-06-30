@@ -664,7 +664,7 @@ app.get('/reportes/:nombre', (req, res) => {
 
 
 // Tarea programada para ejecutarse a las 12:00 AM todos los días
-cron.schedule('00 00 * * *', async () => {
+cron.schedule('10 19 * * *', async () => {
   try {
     console.log('Ejecutando tarea programada...');
 

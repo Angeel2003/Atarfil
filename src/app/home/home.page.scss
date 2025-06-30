@@ -15,14 +15,6 @@ ion-title {
   width: auto;
 }
 
-.adminLogin {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 75vh;
-  padding: 20px;
-}
-
 .title-container {
   text-align: center;
   padding-bottom: 20px;
@@ -32,6 +24,14 @@ ion-title {
     font-weight: bold;
     color: #243270;
   }
+}
+
+.adminLogin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 75vh;
+  padding: 20px;
 }
 
 ion-item {
